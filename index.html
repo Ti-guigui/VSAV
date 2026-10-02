@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pulsar VSAV — Révision Équipier</title>
+  <meta name="description" content="Application de révision Équipier VSAV : cours partie par partie, schémas animés, fiches mémoire, l'essentiel, quiz et carnet d'erreurs. Fonctionne hors ligne.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#9d0208">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    /* Thème appliqué avant le rendu pour éviter le flash */
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('pulsar-vsav-v1') || '{}');
+        var t = s.theme || 'auto';
+        var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Accueil Pulsar VSAV">
+      <img src="icon.svg" alt="" width="34" height="34">
+      <span class="brand-txt"><b>Pulsar</b> VSAV<small>Révision Équipier</small></span>
+    </a>
+    <form class="search" role="search" autocomplete="off" id="search-form">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Rechercher un geste, un chiffre, une fiche…" aria-label="Rechercher dans tout le cours" enterkeyhint="search">
+      <div class="search-pop" id="search-pop" role="listbox" hidden></div>
+    </form>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Basculer clair / sombre" title="Thème clair / sombre">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+  </header>
+
+  <nav class="part-tabs" id="part-tabs" aria-label="Parties du programme"></nav>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Navigation"></aside>
+    <main id="main" class="main" tabindex="-1">
+      <noscript><p class="card">Cette application a besoin de JavaScript.</p></noscript>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+    <a href="#/" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Accueil</a>
+    <a href="#/cours" data-nav="cours"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/></svg>Cours</a>
+    <a href="#/essentiel" data-nav="essentiel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>L'essentiel</a>
+    <a href="#/erreurs" data-nav="erreurs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>Erreurs<span class="badge" id="err-badge" hidden></span></a>
+    <a href="#/plus" data-nav="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Plus</a>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+  <script src="js/svg.js"></script>
+  <script src="js/data/parts.js"></script>
+  <script src="js/data/foad.js"></script>
+  <script src="js/data/tutorat.js"></script>
+  <script src="js/data/partie1.js"></script>
+  <script src="js/data/partie2.js"></script>
+  <script src="js/data/partie3.js"></script>
+  <script src="js/data/socle.js"></script>
+  <script src="js/data/essentiel.js"></script>
+  <script>VSAV.start();</script>
+</body>
+</html>
