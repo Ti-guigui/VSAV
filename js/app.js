@@ -401,7 +401,7 @@
       quick('#/gestion', 'grid', 'Gestion', 'Progression, export, thème') + '</div></div>';
     return h;
   }
-  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">' + s + '</span></span></a>'; }
+  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">(' + s + ')</span></span></a>'; }
 
   function viewCours() {
     route.title = 'Cours';
