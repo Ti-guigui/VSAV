@@ -83,19 +83,21 @@
       '<rect x="40" y="198" width="440" height="10" rx="3" class="f-card s-line" stroke-width="1"/>' +
       '<g id="rcp-body"><path id="rcp-chest" d="M110 196 C112 160 150 150 200 150 L330 152 C360 154 372 170 374 196 Z" class="f-skin s-ink" stroke-width="1.4"/>' +
       '<path d="M374 196 C382 186 400 182 420 186 L456 192 L456 196 Z" class="f-skin s-ink" stroke-width="1.4"/>' +
-      '<circle cx="86" cy="178" r="22" class="f-skin s-ink" stroke-width="1.4"/><path d="M64 178h-6" class="nf s-ink" stroke-width="1.4"/></g>' +
+      '<circle cx="86" cy="178" r="22" class="f-skin s-ink" stroke-width="1.4"/><path d="M64 178h-6" class="nf s-ink" stroke-width="1.4"/>' +
+      // cœur : repère du centre de la poitrine (moitié inférieure du sternum)
+      '<path id="rcp-heart" d="M181 182 C170 174 169 165 176 164 C179 164 181 166 181 169 C181 166 183 164 186 164 C193 165 192 174 181 182 Z" class="f-acc" opacity=".55"/></g>' +
       // BAVU
       '<g id="rcp-bavu" opacity=".35"><rect x="40" y="128" width="58" height="28" rx="14" class="f-info s-info" stroke-width="1.6" id="rcp-ball"/><path d="M98 142 h10 v12 h-6" class="nf s-info" stroke-width="3"/>' + txt(69, 122, 'BAVU', 't-s t-b') + '</g>' +
       // secouriste : bras + mains
-      '<g id="rcp-arms"><path d="M262 40 L258 118 M286 40 L282 118" class="nf s-ink" stroke-width="12" stroke-linecap="round"/><rect x="246" y="116" width="50" height="16" rx="7" class="f-acc"/>' +
-      '<path d="M274 20 v18" class="nf s-ink" stroke-width="22" stroke-linecap="round"/></g>' +
-      '<path d="M271 136 v8" class="nf s-acc" stroke-width="2" id="rcp-depth"/>' +
+      '<g id="rcp-arms"><path d="M172 40 L168 118 M196 40 L192 118" class="nf s-ink" stroke-width="12" stroke-linecap="round"/><rect x="156" y="116" width="50" height="16" rx="7" class="f-acc"/>' +
+      '<path d="M184 20 v18" class="nf s-ink" stroke-width="22" stroke-linecap="round"/></g>' +
+      '<path d="M181 136 v8" class="nf s-acc" stroke-width="2" id="rcp-depth"/>' +
       // compteur
       '<text x="470" y="44" text-anchor="end" class="t-acc" style="font-size:40px" id="rcp-count">0</text>' +
       '<text x="470" y="66" text-anchor="end" class="t-s t-b" id="rcp-phase">Prêt</text>' +
       '<text x="470" y="86" text-anchor="end" class="t-s" id="rcp-cycle"></text>' +
-      '<text x="24" y="34" text-anchor="start" class="t-b" id="rcp-label"></text>' +
-      '<text x="24" y="54" text-anchor="start" class="t-s" id="rcp-time">0:00</text>' +
+      '<text x="24" y="232" text-anchor="start" class="t-b" id="rcp-label"></text>' +
+      '<text x="496" y="232" text-anchor="end" class="t-s" id="rcp-time">0:00</text>' +
       '</svg></div>' +
       ctrl(seg('mode', [['adulte', 'Adulte'], ['enfant', 'Enfant'], ['nourrisson', 'Nourrisson'], ['nn', 'Nouveau-né']], mode) +
         btn('play', 'Démarrer', 'play', true) + btn('reset', 'Remettre à zéro', 'reset') +
@@ -103,7 +105,7 @@
         '<label class="small row" style="gap:6px"><input type="checkbox" data-a="snd"> Métronome sonore</label>') +
       '<div class="anim-panel small" data-a="info"></div>';
     var q = function (s) { return el.querySelector(s); };
-    var arms = q('#rcp-arms'), chest = q('#rcp-chest'), bavu = q('#rcp-bavu'), ball = q('#rcp-ball');
+    var arms = q('#rcp-arms'), chest = q('#rcp-chest'), heart = q('#rcp-heart'), bavu = q('#rcp-bavu'), ball = q('#rcp-ball');
     var cnt = q('#rcp-count'), ph = q('#rcp-phase'), cyc = q('#rcp-cycle'), tm = q('#rcp-time');
     var bpmIn = q('[data-a="bpm"]'), bpmV = q('[data-a="bpmv"]'), playB = q('[data-a="play"]');
     function info() {
@@ -136,7 +138,8 @@
       if (!RM) {
         arms.setAttribute('transform', 'translate(0 ' + (dy * 16).toFixed(2) + ')');
         chest.setAttribute('transform', 'translate(0 ' + (dy * 9).toFixed(2) + ') scale(1 1)');
-        chest.style.transformOrigin = '240px 196px';
+        chest.style.transformOrigin = '180px 196px';
+        heart.setAttribute('transform', 'translate(0 ' + (dy * 9).toFixed(2) + ')');
         ball.setAttribute('transform', 'translate(' + (inflate * 6) + ' ' + (inflate * 4) + ') scale(' + (1 - inflate * .22) + ' ' + (1 - inflate * .3) + ')');
         q('#rcp-body').setAttribute('transform', 'translate(0 ' + (-inflate * 5).toFixed(2) + ')');
       }
