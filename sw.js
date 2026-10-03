@@ -1,5 +1,5 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-v7';
+const CACHE = 'pulsar-vsav-v8';
 const ASSETS = [
   "./",
   "./css/app.css",
@@ -24,6 +24,9 @@ const ASSETS = [
   "./js/data/partie3.js",
   "./js/data/parts.js",
   "./js/data/socle.js",
+  "./js/data/socle-2.js",
+  "./js/data/ca-1.js",
+  "./js/data/ca-2.js",
   "./js/data/tutorat.js",
   "./js/svg.js",
   "./manifest.webmanifest",
