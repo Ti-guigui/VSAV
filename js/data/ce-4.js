@@ -171,7 +171,7 @@ VSAV.chap({
       html: '<p>Chaque stagiaire renseigne : âge, <b>pouls au repos</b>, <b>pouls limite</b>, nombre de tractions, puis pour chaque exercice (<b>marche normale, marche rapide, tour, cave</b>) les pressions et pouls de départ, d’arrivée et leur différence.</p>' +
         '<div class="callout ok"><b>Débit (consommation) : Q = (P0 − P1) × V / T</b> — P0 : pression de départ ; P1 : pression d’arrivée ; V : volume de la bouteille ; T : temps.</div>' +
         '<p class="small muted">Exemple de calcul (illustration) : départ 300 bar, arrivée 240 bar, bouteille 6 l, 5 min → (300 − 240) × 6 / 5 = 72 l/min.</p>' +
-        '<p><b>Pouls limite</b> (tableau B4-1-2, de 17 à 60 ans) : par exemple 170 à 20 ans, 161,5 à 30 ans, 153 à 40 ans, 144,5 à 50 ans, 136 à 60 ans. Les valeurs du tableau correspondent à 0,85 × (220 − âge).</p>' +
+        '<p><b>Pouls limite</b> (tableau B4-1-2, de 17 à 60 ans) : par exemple 170 à 20 ans, 161,5 à 30 ans, 153 à 40 ans, 144,5 à 50 ans, 136 à 60 ans.</p>' +
         '<p>La séquence B4-1 fait prendre le pouls au repos, puis après <b>5 min de marche lente</b> et <b>5 min de marche rapide</b> sous ARI.</p>' },
     { id: 'classes', t: 'Classer le comportement du porteur : A, B, C', ic: 'psy', src: CE4_FOR + ', fiche individuelle d’entraînement (B4-1-1) ; dossier B2 (séquence B4-2) ; séquence 2, diaporama (diapo 3)',
       html: '<div class="tw"><table><thead><tr><th>Classe</th><th>Profil</th></tr></thead><tbody>' +
@@ -310,7 +310,7 @@ VSAV.chap({
 VSAV.chap({
   id: 'ce-ligne-vie', part: 'ce', seq: CE4,
   title: 'Ligne de vie et reconnaissance longue distance', short: 'Ligne de vie, longue distance', motif: 'rope',
-  sources: [CE4_FOR + ', séquence 1 « Composition d’une ligne de vie » (guide formateur, livret apprenant, vrai/faux corrigé)', CE4_FOR + ', séquence 2, diaporama (diapos 12 à 15) ; dossier B2 (séquence B4-2, extraits du GNR)', CE4_FOR + ', séquence 3 « Reconnaissance longue distance » (fiche séquentielle, fiche d’activité, grille d’évaluation formative) ; B5 « Exercice en cave à fumée » (fiche séquentielle, fiche d’activité B5-3)', CE4_GTO + ', chap. I § 1.3.1 (p. 18-21) et chap. III § 1 (p. 39-47)'],
+  sources: [CE4_FOR + ', séquence 1 « Composition d’une ligne de vie » (guide formateur, livret apprenant, vrai/faux corrigé)', CE4_FOR + ', séquence 2, diaporama (diapos 11 à 15) ; dossier B2 (séquence B4-2, extraits du GNR)', CE4_FOR + ', séquence 3 « Reconnaissance longue distance » (fiche séquentielle, fiche d’activité, grille d’évaluation formative) ; B5 « Exercice en cave à fumée » (fiche séquentielle, fiche d’activité B5-3)', CE4_GTO + ', chap. I § 1.3.1 (p. 18-21) et chap. III § 1 (p. 39-47)'],
   summary: 'Ligne guide, liaison personnelle, tableau et plaques de contrôle, dérivation ; les quatre manœuvres (simple reconnaissance, latérale, opération complexe, dérivation) et ce sur quoi le chef d’équipe est évalué.',
   why: '<b>Pourquoi tant de rigueur sur une simple corde ?</b> Dans une fumée opaque et sur une longue distance, la ligne de vie est le <b>seul lien physique</b> entre le binôme, la sortie et le contrôleur. Le chef d’équipe donne la direction et explore ; l’équipier tend la ligne et réalise les amarrages. La grille d’évaluation le rappelle : la rapidité ne doit <b>jamais</b> être privilégiée au détriment de la sécurité.',
   sections: [
