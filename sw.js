@@ -1,5 +1,5 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-v5';
+const CACHE = 'pulsar-vsav-v7';
 const ASSETS = [
   "./",
   "./css/app.css",
@@ -146,7 +146,23 @@ const ASSETS = [
   "./img/ce/4/tableau-controle.jpg",
   "./img/ce/5/m4-poteau.jpg",
   "./img/ce/5/m5-mousse-engin.jpg",
-  "./img/ce/5/m6-changement-tuyau.jpg"
+  "./img/ce/5/m6-changement-tuyau.jpg",
+  "./js/data/ppbe-1.js",
+  "./js/data/ppbe-2.js",
+  "./js/data/ppbe-3.js",
+  "./js/data/gn-1.js",
+  "./js/data/gn-2.js",
+  "./js/data/gn-3.js",
+  "./js/data/gn-4.js",
+  "./js/data/gn-5.js",
+  "./img/ppbe/abattage-zone.jpg",
+  "./img/ppbe/bachage-techniques.jpg",
+  "./img/ppbe/charpente.jpg",
+  "./img/ppbe/echelle-coulisse-detail.jpg",
+  "./img/ppbe/epuisement-reco.jpg",
+  "./img/ppbe/hymenopteres-especes.jpg",
+  "./img/ppbe/pied-echelle.jpg",
+  "./img/ppbe/tronconneuse.jpg"
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(ASSETS.map((u) => c.add(u).catch(() => null)))).then(() => self.skipWaiting()));
