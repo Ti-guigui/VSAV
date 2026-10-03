@@ -18,6 +18,21 @@ VSAV.part({ id: 'p3', tab: 'Partie 3', title: 'Partie 3 — Relevage, brancardag
 VSAV.part({ id: 'socle', tab: 'Socle', title: 'Socle transverse — gestes prérequis', color: '#334155', motif: 'cross',
   desc: 'Les gestes du module transverse utilisés en permanence au VSAV : hémorragies, voies aériennes et PLS, obstruction des voies aériennes, oxygène, brûlures.',
   intro: '<b>Prérequis du module transverse</b> réutilisés dans tous les bilans de l’équipier VSAV. Ces chapitres résument les fiches du module transverse (MAJ 05/2024).' });
-VSAV.part({ id: 'inc', tab: 'Incendie', title: 'Équipier incendie — lutte contre l’incendie', color: '#b91c1c', motif: 'flame',
+VSAV.part({ id: 'inc', tab: 'INC Équipier', title: 'Équipier incendie — lutte contre l’incendie', color: '#b91c1c', motif: 'flame',
   desc: 'Formation Équipier incendie (livret stagiaire SDIS 51) : déroulement d’une intervention, le feu, le matériel, l’hydraulique, l’ARI, la stratégie d’extinction, les sauvetages et les risques technologiques et naturels.',
   intro: '<b>Le rôle de l’équipier incendie :</b> il agit en binôme, sous les ordres directs du chef d’équipe, et ne prend aucune initiative qui pourrait nuire à la sécurité du binôme. Chaque chapitre cite le document source du SDIS ou du ministère (GDO, GTO, GDR).' });
+VSAV.part({ id: 'cav', tab: 'SUAP Chef d’agrès', title: 'SUAP — Chef d’agrès VSAV', color: '#9f1239', motif: 'ambulance',
+  desc: 'Formation Chef d’agrès VSAV : apports de connaissances (bilans, physiologie, rachis, SINUS, attentats…), procédures v2, notes de service et mémos du SDIS 51.',
+  intro: '<b>Le chef d’agrès VSAV</b> commande l’équipage, conduit le bilan et le transmet, et décide de la conduite à tenir selon les procédures du SDIS. Chaque chapitre cite sa source.' });
+VSAV.part({ id: 'ince', tab: 'INC Chef d’équipe', title: 'Incendie — Chef d’équipe INC', color: '#c2410c', motif: 'team',
+  desc: 'Formation Chef d’équipe incendie : livret stagiaire, techniques de lances, lecture du feu, forcement, manœuvres ARI, manœuvres incendie.',
+  intro: '<b>Le chef d’équipe</b> conduit le binôme : il reçoit les ordres du chef d’agrès, engage et ramène son équipe en sécurité. Chaque chapitre cite sa source.' });
+VSAV.part({ id: 'inca', tab: 'INC Chef d’agrès', title: 'Incendie — Chef d’agrès tout engin', color: '#7f1d1d', motif: 'shield',
+  desc: 'Formation Chef d’agrès tout engin incendie : livret stagiaire CA incendie du SDIS 51.',
+  intro: '<b>Le chef d’agrès</b> commande l’agrès et son équipage : reconnaissance, idée de manœuvre, ordres, compte rendu. Chaque chapitre cite sa source.' });
+VSAV.part({ id: 'ppbe', tab: 'PPBE', title: 'PPBE — Protection des personnes, des biens et de l’environnement (ex-DIV)', color: '#0f766e', motif: 'bug',
+  desc: 'Formations Équipier PPBE et Chef d’agrès PPBE : opérations diverses, LSPCC, hyménoptères, animaux, ouvertures de porte, notes de service du SDIS 51.',
+  intro: '<b>Les opérations diverses</b> regroupent les interventions de protection des personnes, des biens et de l’environnement. Chaque chapitre cite sa source.' });
+VSAV.part({ id: 'godr', tab: 'Doctrine', title: 'Doctrine nationale — GDO, GTO, GODR et PIO', color: '#1e3a8a', motif: 'book',
+  desc: 'Synthèse des guides nationaux de doctrine opérationnelle (GDO), de techniques opérationnelles (GTO), des GODR et des partages d’informations opérationnelles (PIO).',
+  intro: '<b>Les guides nationaux</b> fixent le cadre commun à tous les SDIS. Chaque chapitre résume un guide : à quoi il sert, ses idées clés et ses chiffres importants. Les consignes locales du SDIS 51 peuvent les préciser.' });
