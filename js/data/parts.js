@@ -18,3 +18,6 @@ VSAV.part({ id: 'p3', tab: 'Partie 3', title: 'Partie 3 — Relevage, brancardag
 VSAV.part({ id: 'socle', tab: 'Socle', title: 'Socle transverse — gestes prérequis', color: '#334155', motif: 'cross',
   desc: 'Les gestes du module transverse utilisés en permanence au VSAV : hémorragies, voies aériennes et PLS, obstruction des voies aériennes, oxygène, brûlures.',
   intro: '<b>Prérequis du module transverse</b> réutilisés dans tous les bilans de l’équipier VSAV. Ces chapitres résument les fiches du module transverse (MAJ 05/2024).' });
+VSAV.part({ id: 'inc', tab: 'Incendie', title: 'Équipier incendie — lutte contre l’incendie', color: '#b91c1c', motif: 'flame',
+  desc: 'Formation Équipier incendie (livret stagiaire SDIS 51) : déroulement d’une intervention, le feu, le matériel, l’hydraulique, l’ARI, la stratégie d’extinction, les sauvetages et les risques technologiques et naturels.',
+  intro: '<b>Le rôle de l’équipier incendie :</b> il agit en binôme, sous les ordres directs du chef d’équipe, et ne prend aucune initiative qui pourrait nuire à la sécurité du binôme. Chaque chapitre cite le document source du SDIS ou du ministère (GDO, GTO, GDR).' });

@@ -378,7 +378,7 @@
     route.title = 'Accueil';
     var st = globalStats();
     var last = state.last && VSAV.byId[state.last];
-    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Formation Équipier VSAV · SUAP', title: 'Révise l’application des techniques VSAV', sub: 'Cours partie par partie, schémas expliqués et animés, fiches mémoire, l’essentiel à retenir, quiz et carnet d’erreurs. Tout fonctionne hors ligne.', meta: [st.chap + ' chapitres rédigés', st.qTotal + ' questions', 'Sources : fiches FT · PR · AC (MAJ 05/2024)'] });
+    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Formations Équipier VSAV (SUAP) et Équipier incendie', title: 'Révise l’application des techniques VSAV', sub: 'Cours partie par partie, schémas expliqués et animés, fiches mémoire, l’essentiel à retenir, quiz et carnet d’erreurs. Tout fonctionne hors ligne.', meta: [st.chap + ' chapitres rédigés', st.qTotal + ' questions', 'Sources : fiches FT · PR · AC (MAJ 05/2024) · livret Équipier incendie'] });
     h += '<div class="grid g3" style="margin-bottom:16px">' +
       '<div class="card stat"><b>' + st.read + '/' + st.chap + '</b>chapitres lus</div>' +
       '<div class="card stat"><b>' + st.quizDone + '</b>quiz réalisés</div>' +
@@ -405,7 +405,7 @@
 
   function viewCours() {
     route.title = 'Cours';
-    var h = '<div class="wrap">' + heroHtml({ motif: 'book', color: '#334155', crumb: 'Programme Équipier VSAV v2024-05', title: 'Tous les cours', sub: 'Choisis une partie, puis un chapitre. Chaque chapitre indique sa fiche source.' });
+    var h = '<div class="wrap">' + heroHtml({ motif: 'book', color: '#334155', crumb: 'Programmes Équipier VSAV v2024-05 et Équipier incendie', title: 'Tous les cours', sub: 'Choisis une partie, puis un chapitre. Chaque chapitre indique sa fiche source.' });
     VSAV.parts.forEach(function (p) { h += '<h2 style="color:' + p.color + '">' + esc(p.title) + '</h2>' + chapterCards(p.id); });
     return h + '</div>';
   }
