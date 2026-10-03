@@ -72,7 +72,7 @@ VSAV.chap({
         '</tbody></table></div>' +
         '<ul class="check"><li>M4 (diaporama) : <b>« Binôme d’alimentation ! Avec le dévidoir : alimentez l’engin ! »</b></li>' +
         '<li>M5 (diaporama) : « Binôme d’attaque ! Pour l’établissement d’une lance à mousse : en reconnaissance ! » puis « Une lance à mousse ! Point d’attaque…, <b>emplacement du proportionneur</b>…, prise d’eau…, accès…, mission… : établissez ! »</li>' +
-        '<li>Commandements <b>entre membres du binôme</b> : « Halte » (M1), « Attention pour envoyer », « Envoyez », « Hissez » (M3.1), « Ouvrez » (M3.1, M6).</li></ul>' },
+        '<li>Commandements <b>entre membres du binôme</b> : « Halte » (M1), « Attention pour envoyer », « Envoyez », « Hissez » (M3.1), « Ouvrez » (M6 ; et, dans le diaporama M3, pour l’établissement par l’extérieur à la commande).</li></ul>' },
     { id: 'grille', t: 'La grille d’évaluation formative : ce qui est observé', ic: 'check', src: C5_GR + ' (critères communs, cases grisées) ; ' + C5_FS,
       html: '<p>La séquence (3 h 45 dont 3 h 30 de mise en situation) a pour objectif : « en binôme, réaliser une manœuvre incendie <b>en respectant la grille d’évaluation</b> ». Chaque grille « Chef d’équipe » observe les mêmes critères, seule la liste des gestes de la manœuvre change :</p>' +
         '<div class="tw"><table><thead><tr><th>Critère observé</th><th>Case NON grisée ?</th></tr></thead><tbody>' +
@@ -88,7 +88,7 @@ VSAV.chap({
         '</tbody></table></div>' +
         '<div class="callout bad"><b>Règle de validation :</b> <b>1 NON en case grisée</b> ou <b>2 NON</b> sur l’ensemble des cases entraîne la <b>non-validation</b>. En cas de NON en case grisée, la manœuvre <b>est stoppée</b> et le stagiaire est informé des gestes dangereux.</div>' +
         '<p class="small muted">Il n’existe pas de grille M2.3 dans le dossier fourni ; M3.1 et M3.2 ont une grille BAT et une grille BAL.</p>' },
-    { id: 'echeveaux', t: 'Et les tuyaux en écheveaux ?', ic: 'rope', src: 'GDR Tuyaux en écheveaux SDIS 51, § I et § III.2.2 (p. 4 et 17)',
+    { id: 'echeveaux', t: 'Et les tuyaux en écheveaux ?', ic: 'rope', src: 'GDR Tuyaux en écheveaux SDIS 51, § I et § III.2.2 (p. 5 et 17)',
       html: '<p>Le GDR écheveaux <b>adapte</b> M2, M3 et M4 ; il précise que <b>les manœuvres M1 à M6 sont toujours en vigueur</b> et que le chef d’agrès décide seul d’employer, en tout ou partie, les écheveaux. Ce qui change pour le chef d’équipe, c’est le <b>mot du commandement préparatoire</b> qui lui dit quel matériel prendre :</p>' +
         '<div class="tw"><table><thead><tr><th>Binôme</th><th>Commandement</th><th>Matériel</th></tr></thead><tbody>' +
         '<tr><td>BAT</td><td>« <b>M3</b> : pour l’établissement d’une lance X, en reconnaissance »</td><td>Tuyaux roulés en couronne (manœuvre classique)</td></tr>' +
@@ -301,7 +301,7 @@ VSAV.chap({
         ['Attaque le feu', '<b>Surveille l’établissement</b>'],
         ['', 'Vient doubler le chef au point d’attaque']
       ]) + '<p>Le diaporama distingue la lance à mousse <b>directement sur l’engin</b> et <b>sur division alimentée</b> ; la liste « ets en binôme » décline 5.1 sur proportionneur <b>mobile</b> et 5.2 sur proportionneur <b>fixe</b>. Émulseurs, proportionneurs et lances : <a href="#/c/inc-mousse">La mousse</a>.</p>',
-      figs: [{ img: 'img/ce/5/m5-mousse-engin.jpg', cap: 'M5 — Lance à mousse directement sur l’engin', txt: '<p>Ligne « Chef » et ligne « Équipier » : matériel à gauche, actions de gauche à droite, jusqu’à l’attaque où l’équipier vient doubler le chef. Le second tableau (fond bleu) montre les bidons d’émulseur et leur transport.</p>', src: C5_DIA + ', M5 diapo 2 (CSP Reims 09/2000)' }] },
+      figs: [{ img: 'img/ce/5/m5-mousse-engin.jpg', cap: 'M5 — Lance à mousse directement sur l’engin', txt: '<p>Ligne « Chef » et ligne « Équipier » : matériel à gauche, actions de gauche à droite, jusqu’à l’attaque où l’équipier vient doubler le chef. La diapo d’origine comporte aussi un second tableau (fond bleu) consacré aux bidons d’émulseur et à leur transport, non repris ici.</p>', src: C5_DIA + ', M5 diapo 2 (CSP Reims 09/2000)' }] },
     { id: 'm6', t: 'M6 — Remplacement / prolongement de tuyau (BAT)', ic: 'reset', src: C5_DF + ', M6 (p. 14) ; ' + C5_DIA + ', M6 ; ' + C5_GR + ', M6',
       html: ce5Tab([
         ['<b>Poursuit son action</b>', 'Récupère un tuyau, rejoint le chef'],
@@ -310,7 +310,7 @@ VSAV.chap({
         ['<b>Ordonne la fermeture de l’eau</b>', 'Ferme l’eau ou répercute l’ordre au conducteur'],
         ['Débranche et rebranche sa lance, raccorde les tuyaux et <b>annonce « Ouvrez »</b>', 'Ouvre l’eau ou répercute l’ordre au conducteur'],
         ['', 'Vient doubler le chef au point d’attaque']
-      ]) + '<p>Le diaporama M6 présente quatre cas : <b>changement de tuyau sur division alimentée</b>, <b>changement de tuyau sur établissement de manœuvre</b>, <b>prolongement sur division alimentée</b> (6.1 remplacement, 6.2 prolongement dans la liste « ets en binôme »).</p>' +
+      ]) + '<p>Le diaporama M6 présente trois cas (sur quatre diapos, la deuxième étant répétée) : <b>changement de tuyau sur division alimentée</b>, <b>changement de tuyau sur établissement de manœuvre</b>, <b>prolongement sur division alimentée</b> (6.1 remplacement, 6.2 prolongement dans la liste « ets en binôme »).</p>' +
         '<div class="callout ok">Côté équipier, la fiche GTO ETB-6 va dans le même sens : la fermeture de l’eau est commandée par le chef d’équipe du binôme d’attaque, avec une coupure la plus courte possible, et le tuyau de rechange est si possible apporté par une autre équipe pour ne pas dissocier le binôme. Voir <a href="#/c/inc-manoeuvres-etb">ETB-6</a>.</div>',
       figs: [{ img: 'img/ce/5/m6-changement-tuyau.jpg', cap: 'M6 — Changement de tuyau sur division alimentée', txt: '<p>Le chef poursuit l’attaque pendant que l’équipier apporte et déroule le tuyau ; l’équipier ferme puis rouvre la tubulure de la division sur ordre du chef, qui change le tuyau ; l’équipier revient enfin doubler le chef.</p>', src: C5_DIA + ', M6 diapo 1 (CSP Reims 09/2000)' }] },
     { id: 'eval', t: 'Ce que la grille attend du chef', ic: 'check', src: C5_GR + ', M5 et M6',
