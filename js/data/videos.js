@@ -149,3 +149,24 @@ VSAV.chap({
     { id: 'r61', t: 'FT 25 : levage d’un bogie de train aux coussins', ic: 'play', src: SRCVSR, html: '<video class="tuto" controls preload="none" playsinline poster="videos/sr/61.jpg" style="display:block;width:100%;max-height:70vh;border-radius:12px;background:#000"><source src="videos/sr/61.mp4" type="video/mp4">Votre navigateur ne lit pas cette vidéo.</video><p class="small muted">Fiche du site : <a href="#/c/sr-bus-tram-train">Bus, tram, train</a>. Vidéo consultable avec une connexion internet.</p>' }
   ]
 });
+
+/* Lien inverse : ajoute une section « Voir en vidéo » à la fin de chaque chapitre relié à une vidéo. */
+(function () {
+  var byTarget = {}, order = [];
+  VSAV.chapters.forEach(function (c) {
+    if (c.part !== 'vid') return;
+    c.sections.forEach(function (s) {
+      var m = /href="#\/c\/([a-z0-9-]+)"/.exec(s.html || '');
+      if (!m) return;
+      if (!byTarget[m[1]]) { byTarget[m[1]] = []; order.push(m[1]); }
+      byTarget[m[1]].push('<li><a href="#/c/' + c.id + '/' + s.id + '">' + s.t + '</a></li>');
+    });
+  });
+  order.forEach(function (cid) {
+    var c = VSAV.byId[cid];
+    if (!c || c.sections.some(function (s) { return s.id === 'videos'; })) return;
+    var n = byTarget[cid].length;
+    c.sections.push({ id: 'videos', t: n > 1 ? 'Voir en vidéo (' + n + ')' : 'Voir en vidéo', ic: 'play', src: 'Onglet Vidéos du site',
+      html: '<ul class="check">' + byTarget[cid].join('') + '</ul><p class="small muted">Les vidéos s’ouvrent dans l’onglet Vidéos et nécessitent une connexion internet.</p>' });
+  });
+})();
