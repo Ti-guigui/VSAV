@@ -497,7 +497,7 @@ VSAV.chap({
 /* ======================================================================= L’ESSENTIEL */
 VSAV.ess([{ t: 'Incendie — Le matériel de lutte', ic: 'flame', items: [
   { k: 'Extincteurs du FPT', v: '1 CO2 <b>5 kg</b> + 2 poudre <b>9 kg</b>', go: 'inc-extincteurs/fpt' },
-  { k: 'Tensions limites', v: 'Poudre <b>&gt; 1 000 V</b> ; CO2 <b>&lt; 5 000 V</b>', go: 'inc-extincteurs/agents' },
+  { k: 'Tensions limites', v: 'Poudre : utilisable <b>même au-delà de 1 000 V</b> ; CO2 : <b>sous 5 000 V</b> (feu de PPV : ≤ 1 000 V, procédure POP/02)', go: 'inc-extincteurs/agents' },
   { k: 'Règle des 5 D', v: 'Débit, Direction, Diffusion → <b>Distance</b> ; Durée', go: 'inc-lances-jets/cinqd' },
   { k: 'Jets diffusés (LDV MAT/10)', v: 'Attaque <b>15 à 45°</b> ; protection <b>130°</b>', go: 'inc-lances-jets/jets' },
   { k: 'LDV DMRS', v: '<b>6 bars</b>, 0 à <b>500 l/min</b>, basse pression <b>3 bars</b>', go: 'inc-ldv/dmrs' },
