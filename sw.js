@@ -1,5 +1,5 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-v4';
+const CACHE = 'pulsar-vsav-v5';
 const ASSETS = [
   "./",
   "./css/app.css",
@@ -120,7 +120,33 @@ const ASSETS = [
   "./img/inc/5/ssi.jpg",
   "./img/inc/5/tension-de-pas.jpg",
   "./img/inc/5/tension-intensite.jpg",
-  "./img/inc/5/zonage-rch.jpg"
+  "./img/inc/5/zonage-rch.jpg",
+  "./js/data/ce-1.js",
+  "./js/data/ce-2.js",
+  "./js/data/ce-3.js",
+  "./js/data/ce-4.js",
+  "./js/data/ce-5.js",
+  "./img/ce/2/extinction-combinee-tzo.jpg",
+  "./img/ce/2/lance-traditionnelle.jpg",
+  "./img/ce/2/ldv-description.jpg",
+  "./img/ce/3/anti-panique.jpg",
+  "./img/ce/3/denver-drill.jpg",
+  "./img/ce/3/ext-points-fixes.jpg",
+  "./img/ce/3/forcement-ordres.jpg",
+  "./img/ce/3/poussante-phases.jpg",
+  "./img/ce/3/renfort-corniere.jpg",
+  "./img/ce/3/tirer-pousser.jpg",
+  "./img/ce/4/ari-schema.jpg",
+  "./img/ce/4/derivation.jpg",
+  "./img/ce/4/exploration-piece.jpg",
+  "./img/ce/4/liaisons-perso.jpg",
+  "./img/ce/4/lignes-guides.jpg",
+  "./img/ce/4/modes-liaison.jpg",
+  "./img/ce/4/plaque-controle.jpg",
+  "./img/ce/4/tableau-controle.jpg",
+  "./img/ce/5/m4-poteau.jpg",
+  "./img/ce/5/m5-mousse-engin.jpg",
+  "./img/ce/5/m6-changement-tuyau.jpg"
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(ASSETS.map((u) => c.add(u).catch(() => null)))).then(() => self.skipWaiting()));
