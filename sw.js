@@ -1,5 +1,5 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-v10';
+const CACHE = 'pulsar-vsav-v11';
 const ASSETS = [
   "./",
   "./css/app.css",
@@ -32,6 +32,7 @@ const ASSETS = [
   "./js/data/sr-3.js",
   "./js/data/cate-1.js",
   "./js/data/cate-2.js",
+  "./js/data/videos.js",
   "./js/data/tutorat.js",
   "./js/svg.js",
   "./manifest.webmanifest",
@@ -181,6 +182,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  // vidéos : lecture directe depuis le réseau (requêtes partielles, pas de mise en cache hors ligne)
+  if (req.headers.has('range') || /\.mp4$/i.test(new URL(req.url).pathname)) return;
   // cache d'abord (hors ligne), mise à jour en arrière-plan
   e.respondWith(caches.match(req, { ignoreSearch: true }).then((hit) => {
     const net = fetch(req).then((res) => { if (res.ok) { const cp = res.clone(); caches.open(CACHE).then((c) => c.put(req, cp)); } return res; }).catch(() => hit || caches.match('./index.html'));
