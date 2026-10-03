@@ -14,7 +14,7 @@ var FICHECE = 'Fiche individuelle de pré-stage CE INC (SDIS 51)';
 VSAV.chap({
   id: 'ce-role', part: 'ce', seq: CE1,
   title: 'Le chef d’équipe dans la chaîne de commandement', short: 'Rôle du chef d’équipe', motif: 'team',
-  sources: [LIVCE + ', § 1.1 (p. 6-7) et § 1.2 § 1 (p. 8-9)', FICHECE],
+  sources: [LIVCE + ', § 1.1 (p. 6-7) et § 1.2 § 1 (p. 8-9)', FICHECE, 'Livret stagiaire Équipier incendie SDIS 51, § 1.1 (p. 10) — tableau des grades, via le chapitre équipier'],
   summary: 'Placé sous les ordres du chef d’agrès, le chef d’équipe dirige son équipier : premier maillon de la chaîne de commandement, il est responsable de sa mission et de son binôme.',
   why: '<b>Pourquoi le chef d’équipe est-il si important alors qu’il ne commande qu’un seul équipier ?</b> Parce qu’il est le <b>premier maillon</b> de la chaîne de commandement : c’est sur lui que repose le succès des ordres, quel que soit le niveau qui les a donnés. Le livret prend l’exemple d’une longue reconnaissance sous ARI dans un sous-sol complexe : le COS va décider de toute sa manœuvre à partir des comptes rendus des chefs d’équipe. Une mauvaise évaluation ou une erreur de local reconnu peut compromettre le succès final <b>et la sécurité des binômes engagés ensuite</b>. Passer d’équipier à chef d’équipe, c’est passer de « j’exécute » à « je dirige, je contrôle et je rends compte ».',
   sections: [
@@ -46,7 +46,7 @@ VSAV.chap({
     { id: 'principes', t: 'Les principes du commandement opérationnel', ic: 'team', src: LIVCE + ', § 1.2, § 1 (p. 8)',
       steps: ['Le chef d’équipe dirige son binôme (le chef d’équipe et son équipier).', 'Le chef d’équipe ne donne des ordres qu’à son subordonné direct.', 'Le chef d’équipe rend compte à son supérieur direct : le chef d’agrès.', 'Le chef d’équipe contrôle les actions de son subordonné direct, notamment le respect des mesures de sécurité.'], stepsTitle: 'Les 4 principes de base (4)',
       after: '<p>But essentiel de ce principe d’encadrement : <b>garantir le succès d’une intervention avec la plus grande sécurité possible</b>. Il évite toute confusion dans les ordres donnés et dans les comptes rendus, et facilite le contrôle des actions menées (personnels, missions, moyens), selon un niveau de compétence défini et garanti.</p>' },
-    { id: 'chaine', t: 'Le premier maillon de la chaîne', ic: 'list', src: LIVCE + ', § 1.1 (p. 6) et § 1.2, § 1 (p. 8)',
+    { id: 'chaine', t: 'Le premier maillon de la chaîne', ic: 'list', src: LIVCE + ', § 1.2, § 1 (p. 8) ; tableau des grades : livret stagiaire Équipier incendie SDIS 51, § 1.1 (p. 10), repris du chapitre équipier (le livret CE ne le reproduit pas)',
       html: '<p>L’organisation opérationnelle repose sur le bon fonctionnement de la chaîne de commandement. Le chef d’équipe en est le <b>premier maillon</b> : c’est sur lui que repose le succès des ordres donnés, quel que soit le niveau de la chaîne.</p>' +
         '<div class="tw"><table><thead><tr><th>Dénomination</th><th>Grade minimum</th><th>Commande</th></tr></thead><tbody>' +
         '<tr><td>Chef d’agrès tout engin</td><td>Adjudant</td><td>1 engin</td></tr>' +
