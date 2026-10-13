@@ -1,5 +1,5 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-ff532216';
+const CACHE = 'pulsar-vsav-0873130a';
 const ASSETS = [
   "./",
   "./css/app.css",
