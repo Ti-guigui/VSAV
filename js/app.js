@@ -99,7 +99,10 @@
   function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’']/g, "'"); }
-  function strip(html) { var d = document.createElement('div'); d.innerHTML = html || ''; return (d.textContent || '').replace(/\s+/g, ' ').trim(); }
+  /* Texte brut d’un fragment HTML : un espace est inséré à chaque balise de bloc (<p>, <li>, <td>, <br>…)
+     pour que les phrases d’éléments voisins ne se collent pas (« hémorragie.On »). */
+  var BLOCK_TAG = /<(\/?)(p|div|li|ul|ol|dl|dt|dd|td|th|tr|thead|tbody|table|caption|br|hr|h[1-6]|blockquote|section|article|aside|header|footer|figure|figcaption|details|summary|pre)\b([^>]*)>/gi;
+  function strip(html) { var d = document.createElement('div'); d.innerHTML = String(html || '').replace(BLOCK_TAG, ' <$1$2$3> '); return (d.textContent || '').replace(/\s+/g, ' ').trim(); }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2400); }
   VSAV.util = { $: $, $all: $all, esc: esc, norm: norm, strip: strip, toast: toast };

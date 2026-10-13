@@ -46,7 +46,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--top-h) + 60px); }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--top-h) + 64px); }
 body {
   margin: 0; font-family: var(--font); background: var(--bg); color: var(--ink);
   line-height: 1.55; font-size: 16px;
@@ -66,10 +66,11 @@ button { font: inherit; }
   background: #13161d; color: #fff;
   background-image: radial-gradient(circle at 0 0, rgba(229, 56, 59, .35), transparent 45%);
 }
-.brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; flex: none; }
+/* min 44×44 : zone tactile du logo (seul visible sur téléphone) */
+.brand { display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; text-decoration: none; flex: none; min-width: 44px; min-height: 44px; }
 .brand-txt { font-size: 18px; letter-spacing: .3px; line-height: 1.05; }
 .brand-txt b { color: #ff8b8d; }
-.brand-txt small { display: block; font-size: 11px; opacity: .7; letter-spacing: .8px; text-transform: uppercase; }
+.brand-txt small { display: block; font-size: 12px; opacity: .7; letter-spacing: .8px; text-transform: uppercase; }
 .search { position: relative; flex: 1; max-width: 560px; margin-left: auto; display: flex; align-items: center; }
 .search > svg { position: absolute; left: 12px; color: #9aa3b5; pointer-events: none; }
 .search input {
@@ -94,11 +95,11 @@ mark { background: #ffe066; color: #000; border-radius: 3px; padding: 0 2px; }
 
 /* ---------- onglets parties ---------- */
 .part-tabs {
-  position: sticky; top: var(--top-h); z-index: 25; display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px;
+  position: sticky; top: var(--top-h); z-index: 25; display: flex; gap: 6px; overflow-x: auto; padding: 6px 16px; /* hauteur totale ≈ 57px (6 + 44 + 6 + 1) */
   background: var(--card); border-bottom: 1px solid var(--line); scrollbar-width: thin;
 }
 .part-tabs a {
-  flex: none; display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; text-decoration: none;
+  flex: none; display: flex; align-items: center; gap: 8px; padding: 7px 14px; min-height: 44px; /* cible tactile ≥ 44px */ border-radius: 999px; text-decoration: none;
   color: var(--ink2); font-weight: 600; font-size: 14px; border: 1px solid var(--line); background: var(--bg);
 }
 .part-tabs a .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); }
@@ -108,7 +109,7 @@ mark { background: #ffe066; color: #000; border-radius: 3px; padding: 0 2px; }
 /* ---------- mise en page ---------- */
 .layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); max-width: 1320px; margin: 0 auto; }
 .sidebar {
-  position: sticky; top: calc(var(--top-h) + 53px); align-self: start; height: calc(100vh - var(--top-h) - 53px); overflow: auto;
+  position: sticky; top: calc(var(--top-h) + 57px); align-self: start; height: calc(100vh - var(--top-h) - 57px); overflow: auto;
   padding: 16px 10px 40px 16px; border-right: 1px solid var(--line);
 }
 .side-sec { margin-bottom: 14px; }
@@ -169,7 +170,8 @@ tr:last-child td { border-bottom: 0; }
 }
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(0,0,0,.28), rgba(0,0,0,0) 65%); pointer-events: none; }
 .hero > * { position: relative; z-index: 1; }
-.hero .crumb { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: .9; font-weight: 700; }
+/* padding-right : réserve la zone de l’icône décorative (.hero-ic) comme pour le h1 */
+.hero .crumb { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: .9; font-weight: 700; padding-right: 96px; }
 .hero .crumb a { color: #fff; }
 .hero h1 { color: #fff; margin: 6px 0 6px; font-size: 30px; padding-right: 96px; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
 .hero p { margin: 0; max-width: 680px; opacity: .95; }
@@ -178,8 +180,9 @@ tr:last-child td { border-bottom: 0; }
 .hero .meta span { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
 
 /* ---------- chapitre ---------- */
-.chap-nav { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 10px; position: sticky; top: calc(var(--top-h) + 53px); z-index: 10; background: var(--bg); }
-.chap-nav a { flex: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--ink2); text-decoration: none; font-weight: 600; }
+.chap-nav { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 10px; position: sticky; top: calc(var(--top-h) + 57px); z-index: 10; background: var(--bg); }
+/* max-width + ellipsis : un intitulé long ne dépasse plus du bord de l’écran */
+.chap-nav a { flex: none; max-width: min(80vw, 100%); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--ink2); text-decoration: none; font-weight: 600; }
 .chap-nav a:hover { border-color: var(--accent); color: var(--ink); }
 .sec { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 20px 16px; margin: 14px 0; box-shadow: var(--shadow); }
 .sec > h2 { display: flex; align-items: center; gap: 10px; font-size: 19px; margin-top: 14px; }
@@ -269,7 +272,7 @@ figure.schema figcaption b:first-child { display: block; font-size: 15px; margin
 /* fiches mémoire */
 .memo { break-inside: avoid; page-break-inside: avoid; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--card); margin-bottom: 12px; border-top: 5px solid var(--cc, var(--accent)); }
 .memo h3 { margin: 0 0 2px; font-size: 16px; }
-.memo .src { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.memo .src { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .memo ul { margin: 4px 0; padding-left: 18px; font-size: 14px; }
 .memo li { margin: 2px 0; }
 .memo .trapline { font-size: 13px; color: var(--bad); margin-top: 4px; }
@@ -281,7 +284,8 @@ figure.schema figcaption b:first-child { display: block; font-size: 15px; margin
 .ess-item:last-child { border-bottom: 0; }
 .ess-item .k { flex: 0 0 36%; font-weight: 700; }
 .ess-item .v { flex: 1; }
-.ess-item .go { font-size: 12px; white-space: nowrap; }
+/* zone tactile agrandie par padding, compensée par marge négative (rendu visuel inchangé) */
+.ess-item .go { font-size: 12px; white-space: nowrap; display: inline-block; padding: 12px 10px; margin: -12px -10px; }
 
 /* bas de page mobile */
 .bottom-nav { display: none; }
@@ -300,12 +304,13 @@ figure.schema figcaption b:first-child { display: block; font-size: 15px; margin
   .sidebar { display: none; }
   .main { padding: 14px 16px 110px; }
   .hero h1 { font-size: 24px; padding-right: 60px; }
+  .hero .crumb { padding-right: 64px; } /* icône 56px + marge droite */
   .hero .hero-ic { width: 56px; height: 56px; }
   .bottom-nav {
     display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--card); border-top: 1px solid var(--line);
     padding-bottom: env(safe-area-inset-bottom);
   }
-  .bottom-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 2px 8px; font-size: 11px; color: var(--muted); text-decoration: none; font-weight: 600; position: relative; }
+  .bottom-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 2px 8px; font-size: 12.5px; color: var(--muted); text-decoration: none; font-weight: 600; position: relative; }
   .bottom-nav a svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .bottom-nav a[aria-current="page"] { color: var(--accent); }
   .bottom-nav .badge { position: absolute; top: 3px; left: 54%; }
@@ -320,6 +325,21 @@ figure.schema figcaption b:first-child { display: block; font-size: 15px; margin
   .ess-item { flex-direction: column; gap: 2px; }
   .ess-item .k { flex: none; }
   .hero { padding: 20px 16px 16px; }
+  /* suggestions de recherche : toute la largeur de l’écran moins les marges (le champ seul est trop étroit) */
+  .search-pop { position: fixed; top: calc(var(--top-h) - 6px); left: 10px; right: 10px; max-height: calc(100vh - var(--top-h) - 90px); }
+  /* cartes de statistiques de l’accueil : 3 colonnes compactes au lieu d’un empilement */
+  .grid.g3:has(> .stat) { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .grid.g3 > .stat { padding: 10px 6px; font-size: 12.5px; line-height: 1.3; }
+  .grid.g3 > .stat b { font-size: 22px; margin-bottom: 2px; }
+  /* schémas SVG : on garde 100 % de largeur (aucun défilement) mais on récupère de la place
+     (marges internes réduites) et on grossit les petits libellés libres (.t-s : oui/non, BAVU…),
+     réduits d’environ 40 % par l’échelle du viewBox sur téléphone */
+  figure.schema .fig { padding: 8px 4px; }
+  .anim-host .stage { padding: 8px 4px; }
+  /* sélecteur de mode (Adulte/Enfant/Nourrisson/Nouveau-né) : retour à la ligne plutôt que bouton écrasé */
+  .anim-ctrl .seg { flex-wrap: wrap; max-width: 100%; }
+  .anim-ctrl .seg button { flex: 1 1 auto; white-space: nowrap; }
+  svg.sv .t-s { font-size: 15px; } /* spécificité > .sv .t-s (déclaré plus bas) */
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }

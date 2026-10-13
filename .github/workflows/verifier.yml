@@ -1,0 +1,35 @@
+# Vérification du contenu de Pulsar VSAV et du pré-cache du service worker.
+name: Vérifier le contenu
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      # Dernier commit seulement (pas d'historique) ; les vidéos sont nécessaires
+      # car le vérificateur contrôle la présence des fichiers référencés.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Vérifier les données, les liens et les médias
+        run: node tools/verifier.js
+
+      - name: Vérifier que sw.js est à jour
+        run: |
+          node tools/maj-cache.js
+          if ! git diff --exit-code sw.js; then
+            echo "::error file=sw.js::sw.js n'est pas à jour : lancez node tools/maj-cache.js puis committez sw.js."
+            exit 1
+          fi
