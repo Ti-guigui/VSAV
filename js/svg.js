@@ -242,20 +242,21 @@
   A.dae = function (el) {
     var i = -1, who = 'adulte';
     function torso() {
-      var g = svgOpen(360, 260, 'Position des électrodes du DAE') +
+      var g = svgOpen(360, 334, 'Position des électrodes du DAE') +
         '<path d="M110 30 C120 16 240 16 250 30 L282 90 L270 250 H90 L78 90 Z" class="f-skin s-ink" stroke-width="1.4"/>' +
-        '<path d="M180 40 V170" class="nf s-mut" stroke-width="2" stroke-dasharray="4 4"/>' + txt(180, 190, 'sternum', 't-s') +
+        '<path d="M180 40 V170" class="nf s-mut" stroke-width="2" stroke-dasharray="4 4"/>' + txt(180, who === 'adulte' ? 190 : 226, 'sternum', 't-s') +
         '<path d="M128 46 Q150 52 172 46 M188 46 Q210 52 232 46" class="nf s-mut" stroke-width="1.5"/>' + txt(150, 40, 'clavicule droite', 't-s') +
         '<path d="M276 96 Q290 110 284 130" class="nf s-mut" stroke-width="1.5"/>' + txt(312, 100, 'aisselle\ngauche', 't-s');
       if (who === 'adulte') {
         g += '<g class="elec" data-s="1"><rect x="128" y="56" width="44" height="58" rx="6" class="f-acc" opacity=".9"/>' + txt(150, 90, '1', 't-w') + '</g>' +
           '<g class="elec" data-s="1"><rect x="228" y="128" width="44" height="58" rx="6" class="f-acc" opacity=".9" transform="rotate(-12 250 157)"/>' + txt(250, 162, '2', 't-w') + '</g>' +
-          txt(20, 236, '1 : juste sous la clavicule droite, contre le bord droit du sternum', 't-s', 'start') +
-          txt(20, 252, '2 : côté gauche du thorax, 5 à 10 cm sous l’aisselle gauche', 't-s', 'start');
+          /* légendes sous le torse (y > 250) pour ne pas chevaucher le contour */
+          txt(16, 276, '1 : juste sous la clavicule droite,\ncontre le bord droit du sternum', 't-s', 'start') +
+          txt(16, 312, '2 : côté gauche du thorax,\n5 à 10 cm sous l’aisselle gauche', 't-s', 'start');
       } else {
         g += '<g class="elec" data-s="1"><rect x="156" y="80" width="48" height="56" rx="6" class="f-acc" opacity=".9"/>' + txt(180, 113, 'avant', 't-w') + '</g>' +
           '<g class="elec" data-s="1"><rect x="156" y="150" width="48" height="56" rx="6" class="nf s-acc" stroke-width="2.5" stroke-dasharray="5 4"/>' + txt(180, 183, 'dos', 't-acc') + '</g>' +
-          txt(20, 236, 'Nourrisson : une électrode devant, au milieu du thorax,', 't-s', 'start') + txt(20, 252, 'l’autre dans le dos, entre les deux omoplates (pointillés)', 't-s', 'start');
+          txt(16, 276, 'Nourrisson : une électrode devant, au milieu du thorax,\nl’autre dans le dos, entre les deux omoplates\n(pointillés)', 't-s', 'start');
       }
       return g + '<g id="dae-flash" opacity="0"><path d="M188 98 L168 132 h18 l-16 30 36-42 h-18 l16-22z" fill="#ffd166" stroke="#a15c00"/></g></svg>';
     }
