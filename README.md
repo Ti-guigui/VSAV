@@ -77,6 +77,15 @@ Chapitres partiels ou vides (signalés dans l'application, avec la raison) :
   en ligne et ne sont pas mises en cache hors ligne, pour ne pas remplir la mémoire du téléphone.
 - **Quiz** : 1 279 questions expliquées. Chaque erreur est enregistrée ; « Mes erreurs » les fait retravailler une
   par une jusqu'à 2 bonnes réponses consécutives.
+- **Espace Réviser** (`#/reviser`, `js/etude.js`) :
+  - **Plan de révision** : date d'examen + parties → chapitres répartis jour par jour, derniers jours réservés à la
+    révision finale ; le plan se réajuste selon l'avancement (chapitre acquis = lu + quiz ≥ 80 %) ;
+  - **Flashcards à répétition espacée** (boîtes de Leitner : 1, 2, 4, 8, 16, 32 jours), générées à partir des
+    questions de quiz et de « L'essentiel » ; raccourcis Espace / 1 / 2 / 3 ;
+  - **Examen blanc** : 20 à 100 questions tirées au hasard, chrono optionnel, note sur 20, détail par partie,
+    correction ; les erreurs rejoignent le carnet ;
+  - **Défi du jour** : 5 questions identiques toute la journée ;
+  - **Mes progrès** : série de jours, calendrier d'activité, courbe des examens blancs, maîtrise par partie, badges.
 - **Fiches mémoire** par matière (imprimables) et page **L'essentiel** (chiffres et conduites à tenir, reliés au cours).
 - **Gestion** : progression, état de rédaction du contenu, thème auto/clair/sombre, export/import JSON,
   réinitialisation.
@@ -90,6 +99,7 @@ Chapitres partiels ou vides (signalés dans l'application, avec la raison) :
 | `css/app.css` | Styles : clair/sombre, responsive, impression, mouvements réduits |
 | `js/app.js` | Moteur : routeur, vues, quiz, erreurs, recherche, fiches, gestion, `localStorage` ; définit `VSAV.part`, `VSAV.chap`, `VSAV.ess` |
 | `js/svg.js` | Schémas SVG et animations |
+| `js/etude.js` | Outils de révision : plan, flashcards, examen blanc, défi du jour, progrès et badges (via les points d'extension `VSAV.views`, `VSAV.acts`… de `app.js`) |
 | `js/data/parts.js` | Les 14 parties : onglet, titre, couleur, motif, présentation |
 | `js/data/foad.js`, `tutorat.js`, `partie1.js`, `partie2.js`, `partie3.js` | Équipier VSAV : FOAD, Tutorat, Parties 1 à 3 |
 | `js/data/socle.js`, `socle-2.js` | Socle transverse (gestes prérequis du module transverse) |

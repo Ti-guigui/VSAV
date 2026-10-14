@@ -90,7 +90,7 @@
       '<path transform="translate(10 12) scale(1.9)" d="' + d + '"/>' +
       '<path transform="translate(78 74) rotate(-14 20 20) scale(1.5)" d="' + d + '"/></g>' +
       '<circle cx="104" cy="22" r="2" fill="#fff" fill-opacity=".18"/><circle cx="30" cy="104" r="2" fill="#fff" fill-opacity=".18"/></svg>';
-    return 'url("data:image/svg+xml,' + encodeURIComponent(tile) + '"), linear-gradient(135deg, ' + color + ', color-mix(in srgb, ' + color + ' 62%, #000))';
+    return 'url(\'data:image/svg+xml,' + encodeURIComponent(tile) + '\'), linear-gradient(135deg, ' + color + ', color-mix(in srgb, ' + color + ' 62%, #000))';
   }
   VSAV.patternBg = patternBg;
 
@@ -109,7 +109,7 @@
 
   /* ---------------------------------------------------------- état (localStorage) */
   var state = load();
-  function blank() { return { v: 1, theme: 'auto', read: {}, quiz: {}, err: {}, last: null }; }
+  function blank() { return { v: 1, theme: 'auto', read: {}, quiz: {}, err: {}, last: null, days: {}, fc: {}, plan: null, exams: [], defi: {} }; }
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -136,7 +136,11 @@
 
   /* ---------------------------------------------------------- erreurs */
   var MASTERY = 2; // bonnes réponses consécutives pour considérer une question maîtrisée
+  /* activité du jour (série de jours, calendrier de révision) */
+  function dayKey(d) { d = d || new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function logActivity(n) { var k = dayKey(); state.days[k] = (state.days[k] || 0) + (n || 1); }
   function recordAnswer(id, ok) {
+    logActivity(1);
     var e = state.err[id];
     if (!ok) {
       if (!e) e = state.err[id] = { n: 0, streak: 0, m: false, t: 0 };
@@ -251,6 +255,7 @@
   function renderSidebar(activePart, activeChap) {
     var h = '<div class="side-sec">' +
       sideLink('#/', 'pin', 'Accueil', !activePart && route.name === 'home') +
+      sideLink('#/reviser', 'target', 'Réviser', !!VSAV.views[route.name]) +
       sideLink('#/essentiel', 'star', 'L’essentiel', route.name === 'essentiel') +
       sideLink('#/fiches', 'clip', 'Fiches mémoire', route.name === 'fiches') +
       sideLink('#/erreurs', 'reset', 'Mes erreurs', route.name === 'erreurs' || route.name === 'revision') +
@@ -277,7 +282,7 @@
     return '<a class="side-link" href="' + href + '"' + (cur ? ' aria-current="page"' : '') + '><span class="ic">' + icon(ic) + '</span><span>' + esc(label) + '</span></a>';
   }
   function setBottomNav(name) {
-    var map = { home: 'home', cours: 'cours', part: 'cours', chap: 'cours', quiz: 'cours', essentiel: 'essentiel', erreurs: 'erreurs', revision: 'erreurs', plus: 'plus', fiches: 'plus', gestion: 'plus', recherche: 'plus' };
+    var map = { reviser: 'reviser', plan: 'reviser', flash: 'reviser', examen: 'reviser', defi: 'reviser', progres: 'reviser', home: 'home', cours: 'cours', part: 'cours', chap: 'cours', quiz: 'cours', essentiel: 'plus', erreurs: 'erreurs', revision: 'erreurs', plus: 'plus', fiches: 'plus', gestion: 'plus', recherche: 'plus' };
     $all('.bottom-nav a').forEach(function (a) { if (a.getAttribute('data-nav') === map[name]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   }
 
@@ -308,6 +313,7 @@
       else if (name === 'gestion') html = viewGestion();
       else if (name === 'plus') html = viewPlus();
       else if (name === 'recherche') html = viewSearch(r.params.q || '');
+      else if (VSAV.views[name]) { html = VSAV.views[name](s, r.params, route); if (route.accent) accent = route.accent; }
       else { route.name = 'home'; html = '<div class="wrap"><div class="card empty"><h1>Page introuvable</h1><p><a href="#/">Retour à l’accueil</a></p></div></div>'; }
     } catch (err) {
       html = '<div class="wrap"><div class="callout bad"><b>Erreur d’affichage</b>' + esc(err.message) + '</div></div>';
@@ -386,6 +392,7 @@
       '<div class="card stat"><b>' + st.read + '/' + st.chap + '</b>chapitres lus</div>' +
       '<div class="card stat"><b>' + st.quizDone + '</b>quiz réalisés</div>' +
       '<a class="card stat" style="text-decoration:none;color:inherit" href="#/erreurs"><b>' + st.active + '</b>erreurs à retravailler</a></div>';
+    if (VSAV.homeExtra) h += VSAV.homeExtra();
     if (last) h += '<a class="card chap-card" style="--cc:' + accentOf(last) + ';margin-bottom:16px" href="#/c/' + last.id + '"><span class="ic">' + icon(last.motif) + '</span><span><span class="s">Reprendre là où tu t’es arrêté</span><span class="t">' + esc(last.title) + '</span></span></a>';
     h += '<h2>Les parties du programme</h2><div class="grid g2">';
     VSAV.parts.forEach(function (p) {
@@ -609,6 +616,7 @@
     route.title = 'Plus';
     return '<div class="wrap">' + heroHtml({ motif: 'grid', color: '#334155', title: 'Plus' }) + '<div class="grid g2">' +
       quick('#/cours', 'book', 'Tous les cours', 'Partie par partie, chapitre par chapitre') +
+      quick('#/reviser', 'target', 'Réviser', 'Plan, flashcards, examen blanc, défi du jour') +
       quick('#/fiches', 'clip', 'Fiches mémoire', 'Par matière, imprimables') +
       quick('#/essentiel', 'star', 'L’essentiel', 'Chiffres et conduites à tenir') +
       quick('#/erreurs', 'reset', 'Mes erreurs', 'Carnet et révision') +
@@ -714,6 +722,7 @@
   /* ---------------------------------------------------------- interactions des vues */
   function bindView(main) {
     if (route.name === 'revision' && session) revisionNext();
+    if (VSAV.binders[route.name]) VSAV.binders[route.name](main);
     $all('[data-jump]', main).forEach(function (a) { a.addEventListener('click', function (ev) { ev.preventDefault(); var t = document.getElementById(a.getAttribute('data-jump')); if (t) t.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }); });
   }
   document.addEventListener('click', function (ev) {
@@ -733,6 +742,8 @@
             sc.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
           }
         });
+      } else if (VSAV.onChoice[route.name]) {
+        VSAV.onChoice[route.name](ch);
       } else if (route.name === 'revision') {
         answer(ch, function (ok, box) {
           session.done++; if (ok) session.ok++; else session.queue.push(box.getAttribute('data-qid'));
@@ -743,7 +754,8 @@
     }
     var a = ev.target.closest('[data-act]'); if (!a) return;
     var act = a.getAttribute('data-act');
-    if (act === 'read') { var id = a.getAttribute('data-id'); if (state.read[id]) delete state.read[id]; else state.read[id] = Date.now(); save(); toast(state.read[id] ? 'Chapitre marqué comme lu' : 'Marque retirée'); go(); }
+    if (VSAV.acts[act]) { VSAV.acts[act](a, ev); return; }
+    if (act === 'read') { var id = a.getAttribute('data-id'); if (state.read[id]) delete state.read[id]; else { state.read[id] = Date.now(); logActivity(3); } save(); toast(state.read[id] ? 'Chapitre marqué comme lu' : 'Marque retirée'); go(); }
     else if (act === 'rev-next') revisionNext();
     else if (act === 'print') window.print();
     else if (act === 'theme') { state.theme = a.getAttribute('data-v'); save(); applyTheme(); go(); }
@@ -771,6 +783,15 @@
       rd.readAsText(el.files[0]);
     }
   });
+
+  /* ---------------------------------------------------------- extensions (js/etude.js) */
+  VSAV.views = {}; VSAV.binders = {}; VSAV.onChoice = {}; VSAV.acts = {};
+  VSAV.core = {
+    heroHtml: heroHtml, questionHtml: questionHtml, answer: answer, chapsOf: chapsOf, accentOf: accentOf, findQ: findQ, qid: qid,
+    save: save, recordAnswer: recordAnswer, shuffle: shuffle, activeErrors: activeErrors, partProgress: partProgress, quick: quick,
+    dayKey: dayKey, logActivity: logActivity, globalStats: globalStats, MASTERY: MASTERY, DEFAULT_ACCENT: DEFAULT_ACCENT,
+    route: function () { return route; }
+  };
 
   /* ---------------------------------------------------------- démarrage */
   VSAV.start = function () {

@@ -51,7 +51,7 @@ const bac = { VSAV, console };
 bac.window = bac;
 vm.createContext(bac);
 for (const f of scripts) {
-  if (f === 'js/app.js' || !existe(f)) continue; // moteur remplacé par les simulations ci-dessus
+  if (f === 'js/app.js' || f === 'js/etude.js' || !existe(f)) continue; // moteur et outils de révision : pas de contenu à vérifier
   try { vm.runInContext(lire(f), bac, { filename: f }); }
   catch (e) { err(f + ' : exécution impossible — ' + e.message); }
 }
