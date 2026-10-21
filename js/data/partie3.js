@@ -203,7 +203,51 @@ VSAV.chap({
 
 VSAV.chap({
   id: 'msp', part: 'p3', seq: 'MSP / Cas concrets', title: 'Mises en situation professionnelle (MSP) et cas concrets', short: 'MSP / cas concrets', motif: 'target', accent: '#64748b',
-  status: 'vide', todo: 'Le programme indique « Se référer à la liste des MSP » : cette liste <b>ne figure pas</b> dans les documents fournis. Chapitre non rédigé. En attendant, entraîne-toi avec les animations (XABCDE, RCP, repérage SNV) et le carnet d’erreurs.',
+  status: 'partiel',
+  todo: 'Méthode de travail rédigée. <b>À compléter d’après la liste officielle des MSP</b> du programme Équipier VSAV v2024-05 et sa <b>grille d’évaluation</b> (à demander au formateur) : elles ne figurent pas dans les documents fournis. Rien ici n’est un protocole nouveau — tout renvoie à des chapitres existants.',
   sources: ['Programme Équipier VSAV v2024-05 (ligne « MSP / CAS CONCRET »)'],
-  summary: 'Liste des MSP non fournie.'
+  summary: 'Comment aborder une mise en situation : la trame commune d’un cas concret et les chapitres à réviser pour chaque étape.',
+  why: '<b>Pourquoi ce chapitre ?</b> Une MSP (mise en situation professionnelle) évalue ta capacité à <b>enchaîner</b> sécurité, bilan, gestes et transmission sur un cas joué, comme en vrai. Ce chapitre ne t’apprend pas de nouveau geste : il te donne la <b>trame commune</b> à tous les cas et te renvoie, pour chaque étape, au chapitre où le geste est décrit.',
+  sections: [
+    { id: 'role', t: 'À quoi sert une MSP', ic: 'target', src: 'Programme Équipier VSAV v2024-05',
+      html: '<p>Une mise en situation professionnelle met en scène une victime (réelle ou simulée) dans un contexte donné. Tu dois dérouler une intervention complète pendant qu’un évaluateur observe. L’objectif est de vérifier que tu sais <b>relier</b> ce que tu as appris chapitre par chapitre.</p><p><b>À compléter d’après le programme officiel :</b> déroulement exact, durée, nombre d’évaluateurs et consignes de sécurité propres à l’exercice.</p>' },
+    { id: 'trame', t: 'La trame commune d’un cas concret', ic: 'list', src: 'Chapitres existants de l’appli',
+      html: '<p>Quel que soit le cas, l’ordre est toujours le même. Révise le chapitre indiqué à droite.</p><table><thead><tr><th>Étape</th><th>Ce qu’on attend</th><th>Chapitres à réviser</th></tr></thead><tbody>' +
+        '<tr><td>Contexte</td><td>Comprendre l’énoncé : lieu, heure, motif, ce que tu vois en arrivant</td><td><i>fourni par l’évaluateur</i></td></tr>' +
+        '<tr><td>Sécurité &amp; bilan circonstanciel</td><td>Sécuriser, se protéger (EPI, risque infectieux), compter les victimes, demander des renforts si besoin</td><td>Sécurité · Bilans · Risque infectieux · SNV</td></tr>' +
+        '<tr><td>Bilan primaire</td><td>Dérouler XABCDE, repérer une détresse vitale, faire le geste d’urgence</td><td>Bilan primaire · Hémorragies · LVA / PLS · OVA · RCP-ACR · DAE</td></tr>' +
+        '<tr><td>Bilan secondaire</td><td>Plainte, examen, mesures, antécédents</td><td>Bilan secondaire · Mesures</td></tr>' +
+        '<tr><td>Gestes spécifiques</td><td>Conduite à tenir de la pathologie ou du traumatisme du cas</td><td>Chapitre de la Partie 1 ou 2 concerné</td></tr>' +
+        '<tr><td>Transmission</td><td>Transmettre le bilan pour avis médical, appliquer les consignes</td><td>Bilans</td></tr>' +
+        '<tr><td>Relevage / brancardage</td><td>Technique adaptée à l’état de la victime</td><td>Partie 3 (relevage, cuillère, brancardage, portage…)</td></tr>' +
+        '<tr><td>Surveillance</td><td>Rythme de surveillance selon l’état</td><td>Surveillance</td></tr>' +
+        '<tr><td>Après l’intervention</td><td>Nettoyage-désinfection, déchets</td><td>VSAV hygiène · Risque infectieux</td></tr>' +
+        '</tbody></table>' },
+    { id: 'cas', t: 'Exemples de cas à construire', ic: 'list', src: 'Chapitres existants — à faire valider',
+      html: '<p><b>À compléter d’après la liste officielle des MSP.</b> En attendant, voici des cas à monter en réutilisant des chapitres existants (à valider par un formateur) :</p><ul class="check">' +
+        '<li>Douleur thoracique chez un adulte au repos → <b>Douleur thoracique</b>, <b>Bilan secondaire</b>.</li>' +
+        '<li>Chute avec déformation de jambe → <b>Traumatisme des membres</b>, <b>Immobilisation</b>.</li>' +
+        '<li>Malaise chez une personne diabétique → <b>Hypoglycémie</b>, <b>Malaise</b>.</li>' +
+        '<li>Accouchement inopiné à domicile → <b>Accouchement</b>, <b>Nouveau-né</b>.</li>' +
+        '</ul>' },
+    { id: 'evaluation', t: 'Comment tu seras évalué', ic: 'list', src: 'Grille officielle — à récupérer',
+      html: '<p><b>Les critères officiels et le seuil de réussite sont à compléter d’après la grille MSP du programme</b> (à demander au formateur). Dans l’esprit, un évaluateur regarde en général :</p><ul class="check"><li>la <b>sécurité</b> respectée du début à la fin ;</li><li>la <b>détresse vitale</b> reconnue et traitée en priorité ;</li><li>les <b>gestes</b> conformes à la fiche technique ;</li><li>la <b>transmission</b> complète ;</li><li>le <b>travail en équipe</b> et la communication.</li></ul><div class="callout warn">Forme donnée à titre indicatif : ne pas apprendre ces points comme la grille officielle tant qu’elle n’a pas été fournie.</div>' },
+    { id: 'entrainement', t: 'S’entraîner seul', ic: 'target', src: 'Appli',
+      html: '<p>En attendant de passer des MSP, entraîne-toi avec ce que l’appli propose déjà :</p><ul class="check"><li>les <b>animations</b> XABCDE, RCP et repérage SNV ;</li><li>ton <b>carnet d’erreurs</b> ;</li><li>les quiz de chaque chapitre cité dans la trame ci-dessus.</li></ul>' }
+  ],
+  key: [
+    'Une MSP évalue l’enchaînement : sécurité → bilan → gestes → transmission.',
+    'Toujours le même ordre : sécuriser avant de bilanter, traiter la détresse vitale avant le bilan secondaire.',
+    'Chaque étape renvoie à un chapitre existant — c’est ta liste de révision.',
+    'Liste officielle des MSP et grille d’évaluation : à récupérer auprès du formateur.'
+  ],
+  traps: [
+    'Commencer le bilan avant d’avoir sécurisé et de s’être protégé.',
+    'Passer au bilan secondaire sans avoir traité une détresse vitale repérée au primaire.'
+  ],
+  quiz: [
+    { q: 'Dans un cas concret, par quoi commences-tu en arrivant, avant tout bilan ?', c: ['Sécuriser les lieux et se protéger', 'Le bilan secondaire', 'La transmission', 'Le relevage'], e: 'Sécurité et bilan circonstanciel d’abord (chapitres Sécurité et Bilans).', s: 'trame' },
+    { q: 'Au bilan primaire tu repères une détresse vitale. Que fais-tu avant le bilan secondaire ?', c: ['Le geste d’urgence qui traite la détresse', 'Le bilan secondaire quand même', 'La transmission d’abord', 'Rien, tu continues'], e: 'Une détresse vitale se traite immédiatement (chapitre Bilan primaire / XABCDE).', s: 'trame' },
+    { q: 'Après avoir déposé la victime, que fais-tu du matériel ?', c: ['Nettoyage-désinfection selon le protocole', 'Rien', 'Tu le ranges tel quel', 'Tu le jettes'], e: 'Protocole de nettoyage-désinfection (chapitre VSAV hygiène).', s: 'trame' }
+  ]
 });
