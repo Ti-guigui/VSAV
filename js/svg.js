@@ -256,12 +256,12 @@
       } else {
         g += '<g class="elec" data-s="1"><rect x="156" y="80" width="48" height="56" rx="6" class="f-acc" opacity=".9"/>' + txt(180, 113, 'avant', 't-w') + '</g>' +
           '<g class="elec" data-s="1"><rect x="156" y="150" width="48" height="56" rx="6" class="nf s-acc" stroke-width="2.5" stroke-dasharray="5 4"/>' + txt(180, 183, 'dos', 't-acc') + '</g>' +
-          txt(16, 276, 'Nourrisson : une électrode devant, au milieu du thorax,\nl’autre dans le dos, entre les deux omoplates\n(pointillés)', 't-s', 'start');
+          txt(16, 272, 'Enfant et nourrisson : une électrode\ndevant, au milieu du thorax, l’autre\ndans le dos, entre les deux omoplates\n(pointillés)', 't-s', 'start');
       }
       return g + '<g id="dae-flash" opacity="0"><path d="M188 98 L168 132 h18 l-16 30 36-42 h-18 l16-22z" fill="#ffd166" stroke="#a15c00"/></g></svg>';
     }
     function render() {
-      el.innerHTML = '<div class="stage">' + torso() + '</div>' + ctrl(seg('who', [['adulte', 'Adulte / enfant'], ['nourrisson', 'Nourrisson']], who) + btn('next', 'Étape suivante', 'next', true) + btn('reset', 'Recommencer', 'reset')) + '<div class="anim-panel" data-a="p"></div>';
+      el.innerHTML = '<div class="stage">' + torso() + '</div>' + ctrl(seg('who', [['adulte', 'Adulte'], ['nourrisson', 'Enfant / nourrisson']], who) + btn('next', 'Étape suivante', 'next', true) + btn('reset', 'Recommencer', 'reset')) + '<div class="anim-panel" data-a="p"></div>';
       bindSeg(el, 'who', function (v) { who = v; render(); show(i < 0 ? 0 : i); });
       el.querySelector('[data-a="next"]').addEventListener('click', function () { show(i >= DAE.length - 1 ? 0 : i + 1); });
       el.querySelector('[data-a="reset"]').addEventListener('click', function () { show(0); });
