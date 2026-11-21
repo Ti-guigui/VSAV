@@ -232,3 +232,68 @@ figure.schema .fig, .anim-host { background: var(--card); }
 
 /* ---------- accueil : les 3 statistiques occupent toute la largeur ---------- */
 .grid.g3:has(> .stat) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* ==========================================================
+   Couleurs et icônes par catégorie (demande de l’utilisateur) :
+   chaque partie retrouve sa couleur (bandeaux, onglet actif, icônes,
+   boutons, schémas) pour être identifiée d’un coup d’œil. La couleur
+   arrive par --accent (posée par setAccent sur la page) et --pc / --cc.
+   Les bandeaux restent en aplat, sans dégradé.
+   ========================================================== */
+:root, [data-theme="dark"] {
+  --accent-ink: #FFFFFF;
+  --accent-text: color-mix(in srgb, var(--accent) 88%, #000);
+  --accent-soft: color-mix(in srgb, var(--accent) 11%, var(--card));
+}
+[data-theme="dark"] {
+  --accent-text: color-mix(in srgb, var(--accent) 55%, #fff);
+  --accent-soft: color-mix(in srgb, var(--accent) 18%, var(--card));
+}
+[data-theme="dark"] .btn.primary { color: #FFFFFF; }
+
+/* bandeau de titre coloré, avec l’icône de la partie */
+.hero { background-image: none !important; background-color: var(--accent) !important; color: #fff; border-radius: 16px; padding: 24px 24px 20px; margin-bottom: 16px; border-bottom: 0; }
+.hero .hero-ic { display: block; color: rgba(255, 255, 255, .9); }
+.hero .crumb { color: rgba(255, 255, 255, .88); padding-right: 96px; font-weight: 600; }
+.hero .crumb a, [data-theme="dark"] .hero .crumb a { color: #fff; }
+.hero h1 { color: #fff; padding-right: 96px; }
+.hero p { color: rgba(255, 255, 255, .94); }
+.hero .meta span { background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .32); color: #fff; }
+
+/* onglet de la partie active en couleur */
+.part-tabs a { border-color: var(--line); background: var(--card); }
+.part-tabs a .dot { width: 10px; height: 10px; }
+.part-tabs a[aria-current="page"], [data-theme="dark"] .part-tabs a[aria-current="page"] { background: var(--pc); border-color: var(--pc); color: #fff; }
+.part-tabs a[aria-current="page"] .dot { background: #fff; }
+
+/* barre latérale : icônes de la couleur de leur partie */
+.side-link .ic, .side-link[aria-current="page"] .ic { width: 20px; height: 20px; color: var(--pc, var(--accent)); }
+.side-link[aria-current="page"] { background: var(--accent-soft); }
+
+/* accueil : tuiles avec bande colorée et icône */
+.tile .band { height: 72px; margin: -20px -20px 12px; background: var(--pc) !important; position: relative; display: block; }
+.tile .band::before { display: none; }
+.tile .band b { position: absolute; left: 16px; bottom: 10px; color: #fff; font-size: 14px; font-weight: 600; }
+.tile .band .ic { display: block; position: absolute; right: 14px; bottom: 10px; width: 36px; height: 36px; color: #fff; }
+.tile:hover { border-color: var(--pc); }
+.chap-card .ic { background: color-mix(in srgb, var(--cc, var(--accent)) 13%, var(--card)); color: var(--cc, var(--accent)); }
+.chap-card:hover { border-color: var(--cc, var(--accent)); }
+.meter i { background: var(--pc, var(--accent)); }
+
+/* chapitre et schémas : la couleur de la partie revient */
+.sec > h2 .h-ic { background: var(--accent-soft); color: var(--accent-text); }
+.why { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 22%, transparent); }
+.why b:first-child, [data-theme="dark"] .why b:first-child { color: var(--accent-text); }
+.anim-ctrl .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+figure.schema .fig, .anim-host { background: color-mix(in srgb, var(--accent) 4%, var(--card)); }
+.stat b, .score-big { color: var(--accent-text); }
+
+/* fiches mémoire : liseré de la couleur du chapitre */
+.memo { border-top: 4px solid var(--cc, var(--accent)); }
+.memo h3::before { display: none; }
+
+@media (max-width: 600px) {
+  .hero { padding: 20px 16px 16px; }
+  .hero h1, .hero .crumb { padding-right: 60px; }
+  .tile .band { margin: -16px -16px 12px; }
+}
