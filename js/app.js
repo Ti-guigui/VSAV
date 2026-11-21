@@ -184,9 +184,8 @@
     var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   }
-  /* Un seul accent (rouge engin, défini dans css/theme.css) : la couleur d’une partie ne repeint plus l’interface,
-     elle ne sert qu’au petit point devant son nom. */
-  function setAccent() { document.documentElement.style.removeProperty('--accent'); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#151A21' : '#FFFFFF'); }
+  /* Chaque partie a sa couleur : elle devient l’accent de ses pages (bandeau, boutons, icônes, schémas). */
+  function setAccent(color) { document.documentElement.style.setProperty('--accent', color || DEFAULT_ACCENT); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', color || DEFAULT_ACCENT); }
 
   /* ---------------------------------------------------------- rendu des blocs */
   var ROLE_RE = /^((?:Secouristes?|Équipiers?|S)\s?\d+(?:\s*(?:,|et|&|\+)\s*\d+)*(?:\s*\(éventuellement\s*\d+\))?|Chef d’agrès|CA|Aide|L’aide|Tous)\s*:\s*/i;
@@ -443,7 +442,7 @@
   function viewCours() {
     route.title = 'Cours';
     var h = '<div class="wrap">' + heroHtml({ motif: 'book', color: '#334155', crumb: 'Programmes Équipier VSAV v2024-05 et Équipier incendie', title: 'Tous les cours', sub: 'Choisis une partie, puis un chapitre. Chaque chapitre indique sa fiche source.' });
-    VSAV.parts.forEach(function (p) { h += '<h2>' + esc(p.title) + '</h2>' + chapterCards(p.id); });
+    VSAV.parts.forEach(function (p) { h += '<h2 style="color:' + p.color + '">' + esc(p.title) + '</h2>' + chapterCards(p.id); });
     return h + '</div>';
   }
   function chapterCards(pid) {
@@ -550,7 +549,7 @@
     all.forEach(function (k) { var f = findQ(k); (byChap[f.c.id] = byChap[f.c.id] || []).push(k); });
     Object.keys(byChap).forEach(function (cid) {
       var c = VSAV.byId[cid];
-      h += '<div class="card" style="margin:12px 0"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
+      h += '<div class="card" style="margin:12px 0;border-left:4px solid ' + accentOf(c) + '"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
       byChap[cid].forEach(function (k) {
         var f = findQ(k), e = state.err[k];
         h += '<details style="margin-top:8px"><summary>' + (e.m ? '<span class="pill ok">maîtrisée</span> ' : '<span class="pill bad">' + e.n + ' erreur' + (e.n > 1 ? 's' : '') + ' · ' + e.streak + '/' + MASTERY + '</span> ') + strip(f.q.q) + '</summary>' +
@@ -601,7 +600,7 @@
     var parts = pid && VSAV.partById[pid] ? [VSAV.partById[pid]] : VSAV.parts;
     var h = '<div class="wrap">' + heroHtml({ motif: 'clip', color: pid ? VSAV.partById[pid].color : '#334155', crumb: 'Fiches mémoire générées par matière', title: pid ? 'Fiches mémoire — ' + esc(VSAV.partById[pid].tab) : 'Fiches mémoire', sub: 'Générées automatiquement à partir des points clés de chaque chapitre : format court, prêt à imprimer (1 matière = 1 série de fiches).' });
     h += '<div class="row no-print" style="margin-bottom:12px"><a class="btn' + (!pid ? ' primary' : '') + '" href="#/fiches">Toutes</a>';
-    VSAV.parts.forEach(function (p) { h += '<a class="btn' + (pid === p.id ? ' primary' : '') + '" href="#/fiches/' + p.id + '">' + esc(p.tab) + '</a>'; });
+    VSAV.parts.forEach(function (p) { h += '<a class="btn' + (pid === p.id ? ' primary' : '') + '" href="#/fiches/' + p.id + '" style="' + (pid === p.id ? 'background:' + p.color + ';border-color:' + p.color : '') + '">' + esc(p.tab) + '</a>'; });
     h += '<button class="btn" type="button" data-act="print">' + icon('print', '') + 'Imprimer</button></div>';
     parts.forEach(function (p) {
       h += '<h2 style="color:' + p.color + '">' + esc(p.title) + '</h2><div class="memo-cols">';
@@ -741,7 +740,7 @@
     var h = '<div class="wrap">' + heroHtml({ motif: 'eye', color: '#334155', crumb: 'Recherche', title: q ? 'Résultats pour « ' + esc(q) + ' »' : 'Recherche', sub: res.length + ' résultat(s). Clique pour aller directement à la section concernée.' });
     if (!res.length) h += '<div class="card empty">Aucun résultat. Essaie un autre mot (ex. « garrot », « 15 l/min », « Glasgow », « MID »).</div>';
     res.forEach(function (e) {
-      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
+      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit;border-left:4px solid ' + (e.c ? accentOf(e.c) : 'var(--accent)') + '" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
     });
     return h + '</div>';
   }
