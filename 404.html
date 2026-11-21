@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Page introuvable — Pulsar VSAV</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/theme.css">
+  <script>
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('pulsar-vsav-v1') || '{}');
+        var t = s.theme || 'auto';
+        var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
+</head>
+<body>
+  <main class="main" style="padding-top:48px">
+    <div class="wrap">
+      <header class="hero">
+        <div class="crumb">Pulsar VSAV</div>
+        <h1>Cette page n’existe pas</h1>
+        <p>Le lien est peut-être ancien ou mal recopié.</p>
+      </header>
+      <div class="row">
+        <a class="btn primary" href="/#/">Retour à l’accueil</a>
+        <a class="btn" href="/#/cours">Tous les cours</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

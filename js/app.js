@@ -109,12 +109,14 @@
 
   /* ---------------------------------------------------------- état (localStorage) */
   var state = load();
-  function blank() { return { v: 1, theme: 'auto', read: {}, quiz: {}, err: {}, last: null }; }
+  function blank() { return { v: 1, theme: 'auto', read: {}, quiz: {}, err: {}, srs: {}, last: null }; }
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (!s || typeof s !== 'object') return blank();
-      var b = blank(); for (var k in b) if (!(k in s)) s[k] = b[k];
+      var b = blank(); var hadSrs = 'srs' in s; for (var k in b) if (!(k in s)) s[k] = b[k];
+      /* première ouverture avec la révision espacée : les erreurs non maîtrisées sont à revoir dès aujourd’hui */
+      if (!hadSrs) Object.keys(s.err || {}).forEach(function (id) { if (!s.err[id].m) s.srs[id] = { l: 0, due: 0 }; });
       return s;
     } catch (e) { return blank(); }
   }
@@ -137,6 +139,7 @@
   /* ---------------------------------------------------------- erreurs */
   var MASTERY = 2; // bonnes réponses consécutives pour considérer une question maîtrisée
   function recordAnswer(id, ok) {
+    scheduleSrs(id, ok);
     var e = state.err[id];
     if (!ok) {
       if (!e) e = state.err[id] = { n: 0, streak: 0, m: false, t: 0 };
@@ -146,6 +149,29 @@
     }
     save();
   }
+  /* Révision espacée : une question réussie revient après 1, 3, 7, 14 puis 30 jours ;
+     une erreur revient le lendemain. state.srs[id] = { l: palier 0 à 5, due: échéance (début de jour, ms) } */
+  var SRS_DAYS = [1, 1, 3, 7, 14, 30];
+  var DAY = 86400000;
+  function dayStart(t) { var d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function scheduleSrs(id, ok) {
+    if (!state.srs) state.srs = {};
+    var r = state.srs[id] || { l: 0, due: 0 };
+    r.l = ok ? Math.min(r.l + 1, SRS_DAYS.length - 1) : 0;
+    var d = new Date(dayStart(Date.now())); d.setDate(d.getDate() + SRS_DAYS[r.l]);
+    r.due = d.getTime();
+    state.srs[id] = r;
+  }
+  function dueToday() {
+    var limit = dayStart(Date.now()) + DAY;
+    return Object.keys(state.srs || {}).filter(function (k) { return state.srs[k].due < limit && findQ(k); });
+  }
+  function nextDue() {
+    var limit = dayStart(Date.now()) + DAY, best = null;
+    Object.keys(state.srs || {}).forEach(function (k) { var d = state.srs[k].due; if (d >= limit && (best === null || d < best)) best = d; });
+    return best;
+  }
+  function dateFr(t) { return new Date(t).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function activeErrors() { return Object.keys(state.err).filter(function (k) { return !state.err[k].m && findQ(k); }); }
   function updateBadge() {
     var b = $('#err-badge'); if (!b) return;
@@ -158,7 +184,9 @@
     var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   }
-  function setAccent(color) { document.documentElement.style.setProperty('--accent', color || DEFAULT_ACCENT); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', color || '#9d0208'); }
+  /* Un seul accent (rouge engin, défini dans css/theme.css) : la couleur d’une partie ne repeint plus l’interface,
+     elle ne sert qu’au petit point devant son nom. */
+  function setAccent() { document.documentElement.style.removeProperty('--accent'); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#151A21' : '#FFFFFF'); }
 
   /* ---------------------------------------------------------- rendu des blocs */
   var ROLE_RE = /^((?:Secouristes?|Équipiers?|S)\s?\d+(?:\s*(?:,|et|&|\+)\s*\d+)*(?:\s*\(éventuellement\s*\d+\))?|Chef d’agrès|CA|Aide|L’aide|Tous)\s*:\s*/i;
@@ -253,6 +281,7 @@
       sideLink('#/', 'pin', 'Accueil', !activePart && route.name === 'home') +
       sideLink('#/essentiel', 'star', 'L’essentiel', route.name === 'essentiel') +
       sideLink('#/fiches', 'clip', 'Fiches mémoire', route.name === 'fiches') +
+      sideLink('#/jour', 'clock', 'Révisions du jour', route.name === 'jour') +
       sideLink('#/erreurs', 'reset', 'Mes erreurs', route.name === 'erreurs' || route.name === 'revision') +
       sideLink('#/gestion', 'grid', 'Gestion & progression', route.name === 'gestion') + '</div>';
     if (activePart) {
@@ -277,7 +306,7 @@
     return '<a class="side-link" href="' + href + '"' + (cur ? ' aria-current="page"' : '') + '><span class="ic">' + icon(ic) + '</span><span>' + esc(label) + '</span></a>';
   }
   function setBottomNav(name) {
-    var map = { home: 'home', cours: 'cours', part: 'cours', chap: 'cours', quiz: 'cours', essentiel: 'essentiel', erreurs: 'erreurs', revision: 'erreurs', plus: 'plus', fiches: 'plus', gestion: 'plus', recherche: 'plus' };
+    var map = { home: 'home', cours: 'cours', part: 'cours', chap: 'cours', quiz: 'cours', essentiel: 'essentiel', erreurs: 'erreurs', revision: 'erreurs', jour: 'home', plus: 'plus', fiches: 'plus', gestion: 'plus', recherche: 'plus' };
     $all('.bottom-nav a').forEach(function (a) { if (a.getAttribute('data-nav') === map[name]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   }
 
@@ -303,12 +332,14 @@
       else if (name === 'quiz' && VSAV.byId[s[1]]) { var cq = VSAV.byId[s[1]]; activePart = cq.part; activeChap = cq.id; accent = accentOf(cq); html = viewQuiz(cq); }
       else if (name === 'erreurs') html = viewErreurs();
       else if (name === 'revision') html = viewRevision();
+      else if (name === 'jour') html = viewJour();
       else if (name === 'fiches') { activePart = null; if (s[1] && VSAV.partById[s[1]]) accent = VSAV.partById[s[1]].color; html = viewFiches(s[1]); }
       else if (name === 'essentiel') html = viewEssentiel();
       else if (name === 'gestion') html = viewGestion();
       else if (name === 'plus') html = viewPlus();
       else if (name === 'recherche') html = viewSearch(r.params.q || '');
-      else { route.name = 'home'; html = '<div class="wrap"><div class="card empty"><h1>Page introuvable</h1><p><a href="#/">Retour à l’accueil</a></p></div></div>'; }
+      else if (name === 'mentions') html = viewMentions();
+      else { route.name = 'introuvable'; route.title = 'Page introuvable'; html = '<div class="wrap">' + heroHtml({ motif: 'alert', title: 'Cette page n’existe pas', sub: 'Le lien est peut-être ancien ou mal recopié.' }) + '<div class="row"><a class="btn primary" href="#/">Retour à l’accueil</a><a class="btn" href="#/cours">Tous les cours</a></div></div>'; }
     } catch (err) {
       html = '<div class="wrap"><div class="callout bad"><b>Erreur d’affichage</b>' + esc(err.message) + '</div></div>';
       if (window.console) console.error(err);
@@ -381,11 +412,14 @@
     route.title = 'Accueil';
     var st = globalStats();
     var last = state.last && VSAV.byId[state.last];
-    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Formations Équipier VSAV (SUAP) et Équipier incendie', title: 'Révise l’application des techniques VSAV', sub: 'Cours partie par partie, schémas expliqués et animés, fiches mémoire, l’essentiel à retenir, quiz et carnet d’erreurs. Tout fonctionne hors ligne.', meta: [st.chap + ' chapitres rédigés', st.qTotal + ' questions', 'Sources : fiches FT · PR · AC (MAJ 05/2024) · livret Équipier incendie'] });
+    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Équipier et chef d’agrès · SUAP, incendie, secours routier', title: 'Mes révisions', sub: 'Cours partie par partie, schémas animés, fiches mémoire, quiz corrigés et carnet d’erreurs. Fonctionne hors connexion.', meta: [st.chap + ' chapitres', st.qTotal + ' questions', 'FT · PR · AC · MAJ 05/2024'] });
     h += '<div class="grid g3" style="margin-bottom:16px">' +
       '<div class="card stat"><b>' + st.read + '/' + st.chap + '</b>chapitres lus</div>' +
       '<div class="card stat"><b>' + st.quizDone + '</b>quiz réalisés</div>' +
       '<a class="card stat" style="text-decoration:none;color:inherit" href="#/erreurs"><b>' + st.active + '</b>erreurs à retravailler</a></div>';
+    var due = dueToday().length, nd = nextDue();
+    if (due) h += '<a class="card chap-card" style="margin-bottom:16px" href="#/jour"><span class="ic">' + icon('clock') + '</span><span><span class="t">Révisions du jour : ' + due + ' question' + (due > 1 ? 's' : '') + '</span><span class="s">Révision espacée : 1, 3, 7, 14 puis 30 jours</span></span></a>';
+    else if (nd) h += '<div class="card chap-card" style="margin-bottom:16px"><span class="ic">' + icon('clock') + '</span><span><span class="t">Aucune révision aujourd’hui</span><span class="s">Prochaine révision le ' + dateFr(nd) + '</span></span></div>';
     if (last) h += '<a class="card chap-card" style="--cc:' + accentOf(last) + ';margin-bottom:16px" href="#/c/' + last.id + '"><span class="ic">' + icon(last.motif) + '</span><span><span class="s">Reprendre là où tu t’es arrêté</span><span class="t">' + esc(last.title) + '</span></span></a>';
     h += '<h2>Les parties du programme</h2><div class="grid g2">';
     VSAV.parts.forEach(function (p) {
@@ -401,15 +435,15 @@
       quick('#/essentiel', 'star', 'L’essentiel', 'Chiffres, seuils et conduites à tenir clés') +
       quick('#/fiches', 'clip', 'Fiches mémoire', 'Une fiche courte par matière, imprimable') +
       quick('#/erreurs', 'reset', 'Mes erreurs', 'Retravailler jusqu’à maîtrise') +
-      quick('#/gestion', 'grid', 'Gestion', 'Progression, export, thème') + '</div></div>';
+      quick('#/gestion', 'grid', 'Gestion', 'Progression, export, thème') + '</div>' + unofficial() + '</div>';
     return h;
   }
-  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">(' + s + ')</span></span></a>'; }
+  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">' + s + '</span></span></a>'; }
 
   function viewCours() {
     route.title = 'Cours';
     var h = '<div class="wrap">' + heroHtml({ motif: 'book', color: '#334155', crumb: 'Programmes Équipier VSAV v2024-05 et Équipier incendie', title: 'Tous les cours', sub: 'Choisis une partie, puis un chapitre. Chaque chapitre indique sa fiche source.' });
-    VSAV.parts.forEach(function (p) { h += '<h2 style="color:' + p.color + '">' + esc(p.title) + '</h2>' + chapterCards(p.id); });
+    VSAV.parts.forEach(function (p) { h += '<h2>' + esc(p.title) + '</h2>' + chapterCards(p.id); });
     return h + '</div>';
   }
   function chapterCards(pid) {
@@ -510,13 +544,13 @@
     var mastered = all.filter(function (k) { return state.err[k].m; });
     var h = '<div class="wrap">' + heroHtml({ motif: 'reset', color: '#9d0208', crumb: 'Carnet d’erreurs', title: 'Mes erreurs', sub: 'Chaque question ratée est gardée ici. Elle est considérée comme maîtrisée après ' + MASTERY + ' bonnes réponses consécutives.', meta: [act.length + ' à retravailler', mastered.length + ' maîtrisées'] });
     if (!all.length) return h + '<div class="card empty"><p><b>Aucune erreur enregistrée pour l’instant.</b></p><p>Fais les quiz des chapitres : chaque erreur apparaîtra ici avec son explication.</p><a class="btn primary" href="#/cours">Aller aux cours</a></div></div>';
-    h += '<div class="row" style="margin-bottom:12px">' + (act.length ? '<a class="btn primary" href="#/revision">' + icon('play', '') + 'Retravailler mes ' + act.length + ' erreur' + (act.length > 1 ? 's' : '') + '</a>' : '<span class="pill ok">Toutes tes erreurs sont maîtrisées 👏</span>') +
+    h += '<div class="row" style="margin-bottom:12px">' + (act.length ? '<a class="btn primary" href="#/revision">' + icon('play', '') + 'Retravailler mes ' + act.length + ' erreur' + (act.length > 1 ? 's' : '') + '</a>' : '<span class="pill ok">Toutes tes erreurs sont maîtrisées</span>') +
       (mastered.length ? '<button class="btn ghost" type="button" data-act="clear-mastered">' + icon('trash', '') + 'Vider les maîtrisées</button>' : '') + '</div>';
     var byChap = {};
     all.forEach(function (k) { var f = findQ(k); (byChap[f.c.id] = byChap[f.c.id] || []).push(k); });
     Object.keys(byChap).forEach(function (cid) {
       var c = VSAV.byId[cid];
-      h += '<div class="card" style="margin:12px 0;border-left:5px solid ' + accentOf(c) + '"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
+      h += '<div class="card" style="margin:12px 0"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
       byChap[cid].forEach(function (k) {
         var f = findQ(k), e = state.err[k];
         h += '<details style="margin-top:8px"><summary>' + (e.m ? '<span class="pill ok">maîtrisée</span> ' : '<span class="pill bad">' + e.n + ' erreur' + (e.n > 1 ? 's' : '') + ' · ' + e.streak + '/' + MASTERY + '</span> ') + strip(f.q.q) + '</summary>' +
@@ -535,10 +569,26 @@
     session = { queue: shuffle(act), done: 0, ok: 0, total: act.length };
     return h + '<div id="rev"></div></div>';
   }
+  function viewJour() {
+    route.title = 'Révisions du jour';
+    var due = dueToday(), nd = nextDue();
+    var h = '<div class="wrap">' + heroHtml({ motif: 'clock', crumb: 'Révision espacée', title: 'Révisions du jour', sub: 'Les questions déjà vues reviennent au bon moment : après 1, 3, 7, 14 puis 30 jours quand tu les réussis, dès le lendemain quand tu te trompes.', meta: [due.length + ' à revoir aujourd’hui', Object.keys(state.srs || {}).length + ' questions suivies'] });
+    if (!due.length) {
+      session = null;
+      return h + '<div class="card empty"><p><b>Rien à revoir aujourd’hui</b></p><p>' + (nd ? 'Prochaine révision le ' + dateFr(nd) + '.' : 'Fais les quiz des chapitres : chaque question répondue entre dans la révision espacée.') + '</p><a class="btn" href="#/cours">Aller aux cours</a></div></div>';
+    }
+    session = { kind: 'jour', queue: shuffle(due).slice(0, 30), done: 0, ok: 0, total: Math.min(due.length, 30) };
+    return h + '<div id="rev"></div></div>';
+  }
   function revisionNext() {
     var box = $('#rev'); if (!box || !session) return;
+    if (!session.queue.length && session.kind === 'jour') {
+      var rest = dueToday().length, nd = nextDue();
+      box.innerHTML = '<div class="card stat"><div class="score-big">' + session.ok + ' / ' + session.done + '</div><p><strong>Série terminée</strong></p><p class="muted">' + (rest ? 'Encore ' + rest + ' question(s) à revoir aujourd’hui.' : (nd ? 'Prochaine révision le ' + dateFr(nd) + '.' : '')) + '</p><div class="row" style="justify-content:center">' + (rest ? '<a class="btn primary" href="#/jour?r=' + Date.now() + '">Série suivante</a>' : '') + '<a class="btn" href="#/">Accueil</a></div></div>';
+      return;
+    }
     if (!session.queue.length) {
-      box.innerHTML = '<div class="card stat"><div class="score-big">✓</div><p><b>Série terminée !</b> ' + session.ok + ' bonne(s) réponse(s) sur ' + session.done + ' tentative(s).</p><p class="muted">Encore ' + activeErrors().length + ' question(s) à consolider (' + MASTERY + ' réussites consécutives nécessaires).</p><div class="row" style="justify-content:center">' + (activeErrors().length ? '<a class="btn primary" href="#/revision?r=' + Date.now() + '">Nouvelle série</a>' : '') + '<a class="btn" href="#/erreurs">Voir mon carnet</a></div></div>';
+      box.innerHTML = '<div class="card stat"><div class="score-big">✓</div><p><strong>Série terminée</strong> ' + session.ok + ' bonne(s) réponse(s) sur ' + session.done + ' tentative(s).</p><p class="muted">Encore ' + activeErrors().length + ' question(s) à consolider (' + MASTERY + ' réussites consécutives nécessaires).</p><div class="row" style="justify-content:center">' + (activeErrors().length ? '<a class="btn primary" href="#/revision?r=' + Date.now() + '">Nouvelle série</a>' : '') + '<a class="btn" href="#/erreurs">Voir mon carnet</a></div></div>';
       return;
     }
     var id = session.queue.shift(), f = findQ(id);
@@ -551,7 +601,7 @@
     var parts = pid && VSAV.partById[pid] ? [VSAV.partById[pid]] : VSAV.parts;
     var h = '<div class="wrap">' + heroHtml({ motif: 'clip', color: pid ? VSAV.partById[pid].color : '#334155', crumb: 'Fiches mémoire générées par matière', title: pid ? 'Fiches mémoire — ' + esc(VSAV.partById[pid].tab) : 'Fiches mémoire', sub: 'Générées automatiquement à partir des points clés de chaque chapitre : format court, prêt à imprimer (1 matière = 1 série de fiches).' });
     h += '<div class="row no-print" style="margin-bottom:12px"><a class="btn' + (!pid ? ' primary' : '') + '" href="#/fiches">Toutes</a>';
-    VSAV.parts.forEach(function (p) { h += '<a class="btn' + (pid === p.id ? ' primary' : '') + '" href="#/fiches/' + p.id + '" style="' + (pid === p.id ? 'background:' + p.color + ';border-color:' + p.color : '') + '">' + esc(p.tab) + '</a>'; });
+    VSAV.parts.forEach(function (p) { h += '<a class="btn' + (pid === p.id ? ' primary' : '') + '" href="#/fiches/' + p.id + '">' + esc(p.tab) + '</a>'; });
     h += '<button class="btn" type="button" data-act="print">' + icon('print', '') + 'Imprimer</button></div>';
     parts.forEach(function (p) {
       h += '<h2 style="color:' + p.color + '">' + esc(p.title) + '</h2><div class="memo-cols">';
@@ -559,7 +609,7 @@
         if (c.status === 'vide') return;
         var pts = (c.memo || c.key).slice(0, 7);
         h += '<div class="memo" style="--cc:' + accentOf(c) + '"><h3>' + esc(c.short || c.title) + '</h3><div class="src">' + esc(c.sources.join(' · ')) + '</div><ul>' + pts.map(function (k) { return '<li>' + k + '</li>'; }).join('') + '</ul>' +
-          (c.traps[0] ? '<div class="trapline">⚠ ' + c.traps[0] + '</div>' : '') + '</div>';
+          (c.traps[0] ? '<div class="trapline">Piège : ' + c.traps[0] + '</div>' : '') + '</div>';
       });
       h += '</div>';
     });
@@ -605,6 +655,21 @@
     h += '<h2>À propos</h2><div class="card small"><p><b>Pulsar VSAV</b> v' + VSAV.version + ' — application de révision non officielle. Logo original ; aucun logo institutionnel. Le contenu médical provient uniquement des fiches fournies (FT, PR, AC, mémento SSUAP, mémos A6, MAJ 05/2024) ; la fiche officielle fait toujours foi.</p><p>Installation : depuis le navigateur, « Ajouter à l’écran d’accueil » (PWA). Fonctionne hors ligne après la première visite.</p></div></div>';
     return h;
   }
+  function unofficial() {
+    return '<footer class="unofficial"><span>Outil de révision non officiel : la fiche et le formateur font foi.</span><a href="#/mentions">Mentions légales et confidentialité</a></footer>';
+  }
+  function viewMentions() {
+    route.title = 'Mentions légales et confidentialité';
+    return '<div class="wrap legal">' + heroHtml({ motif: 'shield', title: 'Mentions légales et confidentialité' }) +
+      '<h2>Éditeur</h2><p>Site personnel et non professionnel, édité bénévolement par un sapeur-pompier volontaire. Il n’est ni édité ni validé par le SDIS de la Marne.</p>' +
+      '<h2>Hébergement</h2><p>Cloudflare Pages, service de Cloudflare, Inc. (San Francisco, États-Unis).</p>' +
+      '<h2>Statut du contenu</h2><p>Outil de révision non officiel. Le contenu résume les fiches techniques, procédures et livrets de formation ; en cas de différence, la fiche officielle et le formateur font foi. Aucun document classifié ou à diffusion restreinte n’est publié.</p>' +
+      '<h2>Données enregistrées</h2><p>Aucun compte, aucun cookie, aucun traceur, aucune statistique de visite. Ta progression (chapitres lus, résultats des quiz, carnet d’erreurs, thème) est enregistrée uniquement dans ton navigateur et ne quitte pas ton appareil. Tu peux l’exporter ou l’effacer depuis <a href="#/gestion">Gestion et progression</a>.</p>' +
+      '<p>L’hébergeur enregistre techniquement les connexions (adresse IP, date) pour la sécurité du service, selon sa propre politique de confidentialité.</p>' +
+      '<h2>Tes droits</h2><p>Le site ne collecte aucune donnée personnelle : il n’y a rien à consulter, rectifier ou supprimer de son côté. Pour toute question sur tes données, tu peux contacter la CNIL (cnil.fr).</p>' +
+      '<h2>Polices</h2><p>Public Sans et IBM Plex Mono, sous licence SIL Open Font License 1.1, hébergées sur le site, sans appel à un service extérieur.</p>' +
+      '</div>';
+  }
   function viewPlus() {
     route.title = 'Plus';
     return '<div class="wrap">' + heroHtml({ motif: 'grid', color: '#334155', title: 'Plus' }) + '<div class="grid g2">' +
@@ -612,7 +677,8 @@
       quick('#/fiches', 'clip', 'Fiches mémoire', 'Par matière, imprimables') +
       quick('#/essentiel', 'star', 'L’essentiel', 'Chiffres et conduites à tenir') +
       quick('#/erreurs', 'reset', 'Mes erreurs', 'Carnet et révision') +
-      quick('#/gestion', 'grid', 'Gestion', 'Progression, thème, export / import') + '</div></div>';
+      quick('#/gestion', 'grid', 'Gestion', 'Progression, thème, export / import') +
+      quick('#/mentions', 'shield', 'Mentions légales', 'Éditeur, hébergeur, données') + '</div>' + unofficial() + '</div>';
   }
 
   /* ---------------------------------------------------------- recherche */
@@ -675,7 +741,7 @@
     var h = '<div class="wrap">' + heroHtml({ motif: 'eye', color: '#334155', crumb: 'Recherche', title: q ? 'Résultats pour « ' + esc(q) + ' »' : 'Recherche', sub: res.length + ' résultat(s). Clique pour aller directement à la section concernée.' });
     if (!res.length) h += '<div class="card empty">Aucun résultat. Essaie un autre mot (ex. « garrot », « 15 l/min », « Glasgow », « MID »).</div>';
     res.forEach(function (e) {
-      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit;border-left:5px solid ' + (e.c ? accentOf(e.c) : 'var(--accent)') + '" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
+      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
     });
     return h + '</div>';
   }
@@ -713,7 +779,7 @@
 
   /* ---------------------------------------------------------- interactions des vues */
   function bindView(main) {
-    if (route.name === 'revision' && session) revisionNext();
+    if ((route.name === 'revision' || route.name === 'jour') && session) revisionNext();
     $all('[data-jump]', main).forEach(function (a) { a.addEventListener('click', function (ev) { ev.preventDefault(); var t = document.getElementById(a.getAttribute('data-jump')); if (t) t.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }); });
   }
   document.addEventListener('click', function (ev) {
@@ -729,13 +795,13 @@
             state.quiz[cid] = { best: Math.max(good, prev ? prev.best : 0), last: good, n: (prev ? prev.n : 0) + 1, t: Date.now() };
             save();
             var sc = $('#quiz-score'); sc.hidden = false;
-            sc.innerHTML = '<div class="stat"><div class="score-big">' + good + ' / ' + total + '</div><p>' + (good === total ? 'Parfait, chapitre maîtrisé !' : (total - good) + ' erreur(s) ajoutée(s) à ton carnet.') + '</p><div class="row" style="justify-content:center">' + (good < total ? '<a class="btn primary" href="#/revision">Retravailler mes erreurs</a>' : '') + '<a class="btn" href="#/c/' + cid + '">Retour au chapitre</a></div></div>';
+            sc.innerHTML = '<div class="stat"><div class="score-big">' + good + ' / ' + total + '</div><p>' + (good === total ? 'Chapitre maîtrisé' : (total - good) + ' erreur(s) ajoutée(s) à ton carnet.') + '</p><div class="row" style="justify-content:center">' + (good < total ? '<a class="btn primary" href="#/revision">Retravailler mes erreurs</a>' : '') + '<a class="btn" href="#/c/' + cid + '">Retour au chapitre</a></div></div>';
             sc.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
           }
         });
-      } else if (route.name === 'revision') {
+      } else if (route.name === 'revision' || route.name === 'jour') {
         answer(ch, function (ok, box) {
-          session.done++; if (ok) session.ok++; else session.queue.push(box.getAttribute('data-qid'));
+          session.done++; if (ok) session.ok++; else if (session.kind !== 'jour') session.queue.push(box.getAttribute('data-qid'));
           var nx = $('#rev-next'); nx.hidden = false; nx.querySelector('button').focus();
         });
       }
