@@ -1,8 +1,17 @@
 /* Service worker : pré-cache complet → l'application fonctionne hors ligne. */
-const CACHE = 'pulsar-vsav-ebfc2a58';
+const CACHE = 'pulsar-vsav-f75ca20e';
 const ASSETS = [
   "./",
+  "./404.html",
   "./css/app.css",
+  "./css/fonts/OFL-ibm-plex-mono.txt",
+  "./css/fonts/OFL-public-sans.txt",
+  "./css/fonts/ibm-plex-mono-latin-400-normal.woff2",
+  "./css/fonts/public-sans-latin-400-normal.woff2",
+  "./css/fonts/public-sans-latin-600-normal.woff2",
+  "./css/fonts/public-sans-latin-ext-400-normal.woff2",
+  "./css/fonts/public-sans-latin-ext-600-normal.woff2",
+  "./css/theme.css",
   "./icon-192.png",
   "./icon-512.png",
   "./icon.svg",

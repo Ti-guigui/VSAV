@@ -158,7 +158,9 @@
     var dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   }
-  function setAccent(color) { document.documentElement.style.setProperty('--accent', color || DEFAULT_ACCENT); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', color || '#9d0208'); }
+  /* Un seul accent (rouge engin, défini dans css/theme.css) : la couleur d’une partie ne repeint plus l’interface,
+     elle ne sert qu’au petit point devant son nom. */
+  function setAccent() { document.documentElement.style.removeProperty('--accent'); var m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#151A21' : '#FFFFFF'); }
 
   /* ---------------------------------------------------------- rendu des blocs */
   var ROLE_RE = /^((?:Secouristes?|Équipiers?|S)\s?\d+(?:\s*(?:,|et|&|\+)\s*\d+)*(?:\s*\(éventuellement\s*\d+\))?|Chef d’agrès|CA|Aide|L’aide|Tous)\s*:\s*/i;
@@ -308,7 +310,8 @@
       else if (name === 'gestion') html = viewGestion();
       else if (name === 'plus') html = viewPlus();
       else if (name === 'recherche') html = viewSearch(r.params.q || '');
-      else { route.name = 'home'; html = '<div class="wrap"><div class="card empty"><h1>Page introuvable</h1><p><a href="#/">Retour à l’accueil</a></p></div></div>'; }
+      else if (name === 'mentions') html = viewMentions();
+      else { route.name = 'introuvable'; route.title = 'Page introuvable'; html = '<div class="wrap">' + heroHtml({ motif: 'alert', title: 'Cette page n’existe pas', sub: 'Le lien est peut-être ancien ou mal recopié.' }) + '<div class="row"><a class="btn primary" href="#/">Retour à l’accueil</a><a class="btn" href="#/cours">Tous les cours</a></div></div>'; }
     } catch (err) {
       html = '<div class="wrap"><div class="callout bad"><b>Erreur d’affichage</b>' + esc(err.message) + '</div></div>';
       if (window.console) console.error(err);
@@ -381,7 +384,7 @@
     route.title = 'Accueil';
     var st = globalStats();
     var last = state.last && VSAV.byId[state.last];
-    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Formations Équipier VSAV (SUAP) et Équipier incendie', title: 'Révise l’application des techniques VSAV', sub: 'Cours partie par partie, schémas expliqués et animés, fiches mémoire, l’essentiel à retenir, quiz et carnet d’erreurs. Tout fonctionne hors ligne.', meta: [st.chap + ' chapitres rédigés', st.qTotal + ' questions', 'Sources : fiches FT · PR · AC (MAJ 05/2024) · livret Équipier incendie'] });
+    var h = '<div class="wrap">' + heroHtml({ motif: 'ecg', color: DEFAULT_ACCENT, crumb: 'Équipier et chef d’agrès · SUAP, incendie, secours routier', title: 'Mes révisions', sub: 'Cours partie par partie, schémas animés, fiches mémoire, quiz corrigés et carnet d’erreurs. Fonctionne hors connexion.', meta: [st.chap + ' chapitres', st.qTotal + ' questions', 'FT · PR · AC · MAJ 05/2024'] });
     h += '<div class="grid g3" style="margin-bottom:16px">' +
       '<div class="card stat"><b>' + st.read + '/' + st.chap + '</b>chapitres lus</div>' +
       '<div class="card stat"><b>' + st.quizDone + '</b>quiz réalisés</div>' +
@@ -401,10 +404,10 @@
       quick('#/essentiel', 'star', 'L’essentiel', 'Chiffres, seuils et conduites à tenir clés') +
       quick('#/fiches', 'clip', 'Fiches mémoire', 'Une fiche courte par matière, imprimable') +
       quick('#/erreurs', 'reset', 'Mes erreurs', 'Retravailler jusqu’à maîtrise') +
-      quick('#/gestion', 'grid', 'Gestion', 'Progression, export, thème') + '</div></div>';
+      quick('#/gestion', 'grid', 'Gestion', 'Progression, export, thème') + '</div>' + unofficial() + '</div>';
     return h;
   }
-  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">(' + s + ')</span></span></a>'; }
+  function quick(href, ic, t, s) { return '<a class="card chap-card" style="--cc:var(--accent)" href="' + href + '"><span class="ic">' + icon(ic) + '</span><span><span class="t">' + t + '</span><span class="s">' + s + '</span></span></a>'; }
 
   function viewCours() {
     route.title = 'Cours';
@@ -516,7 +519,7 @@
     all.forEach(function (k) { var f = findQ(k); (byChap[f.c.id] = byChap[f.c.id] || []).push(k); });
     Object.keys(byChap).forEach(function (cid) {
       var c = VSAV.byId[cid];
-      h += '<div class="card" style="margin:12px 0;border-left:5px solid ' + accentOf(c) + '"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
+      h += '<div class="card" style="margin:12px 0"><div class="row" style="justify-content:space-between"><b>' + esc(c.title) + '</b><a class="small" href="#/c/' + c.id + '">Revoir le cours</a></div>';
       byChap[cid].forEach(function (k) {
         var f = findQ(k), e = state.err[k];
         h += '<details style="margin-top:8px"><summary>' + (e.m ? '<span class="pill ok">maîtrisée</span> ' : '<span class="pill bad">' + e.n + ' erreur' + (e.n > 1 ? 's' : '') + ' · ' + e.streak + '/' + MASTERY + '</span> ') + strip(f.q.q) + '</summary>' +
@@ -538,7 +541,7 @@
   function revisionNext() {
     var box = $('#rev'); if (!box || !session) return;
     if (!session.queue.length) {
-      box.innerHTML = '<div class="card stat"><div class="score-big">✓</div><p><b>Série terminée !</b> ' + session.ok + ' bonne(s) réponse(s) sur ' + session.done + ' tentative(s).</p><p class="muted">Encore ' + activeErrors().length + ' question(s) à consolider (' + MASTERY + ' réussites consécutives nécessaires).</p><div class="row" style="justify-content:center">' + (activeErrors().length ? '<a class="btn primary" href="#/revision?r=' + Date.now() + '">Nouvelle série</a>' : '') + '<a class="btn" href="#/erreurs">Voir mon carnet</a></div></div>';
+      box.innerHTML = '<div class="card stat"><div class="score-big">✓</div><p><b>Série terminée</b> ' + session.ok + ' bonne(s) réponse(s) sur ' + session.done + ' tentative(s).</p><p class="muted">Encore ' + activeErrors().length + ' question(s) à consolider (' + MASTERY + ' réussites consécutives nécessaires).</p><div class="row" style="justify-content:center">' + (activeErrors().length ? '<a class="btn primary" href="#/revision?r=' + Date.now() + '">Nouvelle série</a>' : '') + '<a class="btn" href="#/erreurs">Voir mon carnet</a></div></div>';
       return;
     }
     var id = session.queue.shift(), f = findQ(id);
@@ -605,6 +608,21 @@
     h += '<h2>À propos</h2><div class="card small"><p><b>Pulsar VSAV</b> v' + VSAV.version + ' — application de révision non officielle. Logo original ; aucun logo institutionnel. Le contenu médical provient uniquement des fiches fournies (FT, PR, AC, mémento SSUAP, mémos A6, MAJ 05/2024) ; la fiche officielle fait toujours foi.</p><p>Installation : depuis le navigateur, « Ajouter à l’écran d’accueil » (PWA). Fonctionne hors ligne après la première visite.</p></div></div>';
     return h;
   }
+  function unofficial() {
+    return '<footer class="unofficial"><span>Outil de révision non officiel : la fiche et le formateur font foi.</span><a href="#/mentions">Mentions légales et confidentialité</a></footer>';
+  }
+  function viewMentions() {
+    route.title = 'Mentions légales et confidentialité';
+    return '<div class="wrap legal">' + heroHtml({ motif: 'shield', title: 'Mentions légales et confidentialité' }) +
+      '<h2>Éditeur</h2><p>Site personnel et non professionnel, édité bénévolement par un sapeur-pompier volontaire. Il n’est ni édité ni validé par le SDIS de la Marne.</p>' +
+      '<h2>Hébergement</h2><p>Cloudflare Pages, service de Cloudflare, Inc. (San Francisco, États-Unis).</p>' +
+      '<h2>Statut du contenu</h2><p>Outil de révision non officiel. Le contenu résume les fiches techniques, procédures et livrets de formation ; en cas de différence, la fiche officielle et le formateur font foi. Aucun document classifié ou à diffusion restreinte n’est publié.</p>' +
+      '<h2>Données enregistrées</h2><p>Aucun compte, aucun cookie, aucun traceur, aucune statistique de visite. Ta progression (chapitres lus, résultats des quiz, carnet d’erreurs, thème) est enregistrée uniquement dans ton navigateur et ne quitte pas ton appareil. Tu peux l’exporter ou l’effacer depuis <a href="#/gestion">Gestion et progression</a>.</p>' +
+      '<p>L’hébergeur enregistre techniquement les connexions (adresse IP, date) pour la sécurité du service, selon sa propre politique de confidentialité.</p>' +
+      '<h2>Tes droits</h2><p>Le site ne collecte aucune donnée personnelle : il n’y a rien à consulter, rectifier ou supprimer de son côté. Pour toute question sur tes données, tu peux contacter la CNIL (cnil.fr).</p>' +
+      '<h2>Polices</h2><p>Public Sans et IBM Plex Mono, sous licence SIL Open Font License 1.1, hébergées sur le site, sans appel à un service extérieur.</p>' +
+      '</div>';
+  }
   function viewPlus() {
     route.title = 'Plus';
     return '<div class="wrap">' + heroHtml({ motif: 'grid', color: '#334155', title: 'Plus' }) + '<div class="grid g2">' +
@@ -612,7 +630,8 @@
       quick('#/fiches', 'clip', 'Fiches mémoire', 'Par matière, imprimables') +
       quick('#/essentiel', 'star', 'L’essentiel', 'Chiffres et conduites à tenir') +
       quick('#/erreurs', 'reset', 'Mes erreurs', 'Carnet et révision') +
-      quick('#/gestion', 'grid', 'Gestion', 'Progression, thème, export / import') + '</div></div>';
+      quick('#/gestion', 'grid', 'Gestion', 'Progression, thème, export / import') +
+      quick('#/mentions', 'shield', 'Mentions légales', 'Éditeur, hébergeur, données') + '</div>' + unofficial() + '</div>';
   }
 
   /* ---------------------------------------------------------- recherche */
@@ -675,7 +694,7 @@
     var h = '<div class="wrap">' + heroHtml({ motif: 'eye', color: '#334155', crumb: 'Recherche', title: q ? 'Résultats pour « ' + esc(q) + ' »' : 'Recherche', sub: res.length + ' résultat(s). Clique pour aller directement à la section concernée.' });
     if (!res.length) h += '<div class="card empty">Aucun résultat. Essaie un autre mot (ex. « garrot », « 15 l/min », « Glasgow », « MID »).</div>';
     res.forEach(function (e) {
-      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit;border-left:5px solid ' + (e.c ? accentOf(e.c) : 'var(--accent)') + '" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
+      h += '<a class="card" style="display:block;margin:10px 0;text-decoration:none;color:inherit" href="' + resultHref(e, q) + '"><div class="small muted">' + esc(e.sub) + '</div><b>' + esc(e.t) + '</b><div class="small">' + snippet(e, q) + '</div></a>';
     });
     return h + '</div>';
   }
@@ -729,7 +748,7 @@
             state.quiz[cid] = { best: Math.max(good, prev ? prev.best : 0), last: good, n: (prev ? prev.n : 0) + 1, t: Date.now() };
             save();
             var sc = $('#quiz-score'); sc.hidden = false;
-            sc.innerHTML = '<div class="stat"><div class="score-big">' + good + ' / ' + total + '</div><p>' + (good === total ? 'Parfait, chapitre maîtrisé !' : (total - good) + ' erreur(s) ajoutée(s) à ton carnet.') + '</p><div class="row" style="justify-content:center">' + (good < total ? '<a class="btn primary" href="#/revision">Retravailler mes erreurs</a>' : '') + '<a class="btn" href="#/c/' + cid + '">Retour au chapitre</a></div></div>';
+            sc.innerHTML = '<div class="stat"><div class="score-big">' + good + ' / ' + total + '</div><p>' + (good === total ? 'Chapitre maîtrisé' : (total - good) + ' erreur(s) ajoutée(s) à ton carnet.') + '</p><div class="row" style="justify-content:center">' + (good < total ? '<a class="btn primary" href="#/revision">Retravailler mes erreurs</a>' : '') + '<a class="btn" href="#/c/' + cid + '">Retour au chapitre</a></div></div>';
             sc.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
           }
         });

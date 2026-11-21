@@ -179,7 +179,7 @@
         '<text x="' + xs[k] + '" y="' + (y + 9) + '" text-anchor="middle" class="t-w" style="font-size:26px">' + s.l + '</text>' +
         txt(xs[k], y + 48, s.n.split(' — ')[0], 't-s t-b') + '</g>';
     });
-    g += '<g id="o2"><circle cx="20" cy="70" r="11" fill="#fff" stroke="#1b5fa8" stroke-width="2.5"/><text x="20" y="74" text-anchor="middle" style="font-size:10px;font-weight:800;fill:#1b5fa8">O₂</text></g></svg>';
+    g += '<g id="o2"><circle cx="20" cy="70" r="11" fill="#fff" stroke="#1b5fa8" stroke-width="2.5"/><text x="20" y="74" text-anchor="middle" style="font-size:10px;font-weight:600;fill:#1b5fa8">O₂</text></g></svg>';
     el.innerHTML = '<div class="stage">' + g + '</div>' + ctrl(btn('prev', 'Préc.', 'prev') + btn('play', 'Lecture', 'play', true) + btn('next', 'Suiv.', 'next') + '<span class="small muted">« Traiter en premier ce qui tue en premier »</span>') + '<div class="anim-panel" data-a="panel"><b>Clique sur une lettre ou lance la lecture.</b> Pour chaque item, les gestes de survie sont initiés avant de passer au suivant.</div>';
     var o2 = el.querySelector('#o2'), panel = el.querySelector('[data-a="panel"]'), pb = el.querySelector('[data-a="play"]');
     function show(k) {
