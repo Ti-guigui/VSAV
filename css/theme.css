@@ -229,3 +229,6 @@ figure.schema .fig, .anim-host { background: var(--card); }
 [data-theme="dark"] .part-tabs a[aria-current="page"] { color: var(--ink); }
 [data-theme="dark"] .bottom-nav a { color: var(--muted); }
 [data-theme="dark"] .bottom-nav a[aria-current="page"] { color: var(--ink); }
+
+/* ---------- accueil : les 3 statistiques occupent toute la largeur ---------- */
+.grid.g3:has(> .stat) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
